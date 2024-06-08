@@ -1,198 +1,228 @@
 <?xml version="1.0" ?>
 <robot name="dirac" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-	<xacro:property name="robot_wheel_mass" value="5"/>
-	<xacro:property name="robot_wheel_length" value="0.05"/>
-	<xacro:property name="robot_wheel_radius" value="0.1"/>
-	<xacro:property name="robot_chassis_mass" value="15"/>
-	<xacro:include filename="$(find dirac_description)/urdf/dirac.gazebo" />
+    <xacro:property name="robot_wheel_mass" value="5"/>
+    <xacro:property name="robot_wheel_length" value="0.05"/>
+    <xacro:property name="robot_wheel_radius" value="0.1"/>
+    <xacro:property name="robot_chassis_mass" value="15"/>
+    <xacro:include filename="$(find dirac_description)/urdf/dirac.gazebo" />
 
     <link name="base_link"></link>
     <link name="link_chassis">
-     		<pose>0 0 0.1 0 0 0</pose>
+        <pose>0 0 0.1 0 0 0</pose>
 
-		<inertial>
-			<mass value="${robot_chassis_mass}"/>
-      		<origin xyz="0.0 0 0" rpy=" 0 0 0"/>
+        <inertial>
+            <mass value="${robot_chassis_mass}"/>
+            <origin xyz="0.0 0 0" rpy="0 0 0"/>
 
-      		<inertia
-      			ixx="0.147116667" ixy="0" ixz="0"
-      			iyy="0.334951167" iyz="0"
-      			izz="0.3978345"
-      		/>
-		</inertial>
+            <inertia
+                ixx="0.147116667" ixy="0" ixz="0"
+                iyy="0.334951167" iyz="0"
+                izz="0.3978345"
+            />
+        </inertial>
 
-		<collision name="collision">
-			<origin xyz="0 0 0.05" rpy=" 0 0 0"/>
-			<geometry>
-				<box size="0.5 0.5 0.2"/>
-			</geometry>
-		</collision>
+        <collision name="collision">
+            <origin xyz="0 0 0.05" rpy="0 0 0"/>
+            <geometry>
+                <box size="0.5 0.5 0.2"/>
+            </geometry>
+        </collision>
 
-		<visual name="chassis_visual">
-			<origin xyz="0 0 0.05" rpy=" 0 0 0"/>
-			<geometry>
-				<box size="0.5 0.5 0.2"/>
-			</geometry>
-
-		</visual>
+        <visual name="chassis_visual">
+            <origin xyz="0 0 0.05" rpy="0 0 0"/>
+            <geometry>
+                <box size="0.5 0.5 0.2"/>
+            </geometry>
+        </visual>
     </link>
 
     <joint name="joint1" type="fixed">
-      <parent link="base_link"/>
-      <child link="link_chassis"/>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
+        <parent link="base_link"/>
+        <child link="link_chassis"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
     </joint>
 
+    <!-- Right Wheel Back -->
+    <link name="right_wheel_back">
+        <inertial>
+            <mass value="${robot_wheel_mass}"/>
+            <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
+            <inertia
+                ixx="0.1" ixy="0.0" ixz="0.0"
+                iyy="0.1" iyz="0.0"
+                izz="0.1"
+            />
+        </inertial>
 
-	<!-- Right Wheel Back -->
-	<link name="right_wheel_back">
-		<inertial>
-			<mass value="${robot_wheel_mass}"/>
-			<origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
-			<inertia
-				ixx="0.1" ixy="0.0" ixz="0.0"
-				iyy="0.1" iyz="0.0"
-				izz="0.1"
-			/>
-		</inertial>
+        <visual>
+            <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
+            <geometry>
+                <cylinder radius="${robot_wheel_radius}" length="${robot_wheel_length}"/>
+            </geometry>
+        </visual>
 
-		<visual>
-			<origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
-			<geometry>
-				<cylinder radius="${robot_wheel_radius}" length="${robot_wheel_length}"/>
-			</geometry>
-		</visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
+            <geometry>
+                <cylinder radius="${robot_wheel_radius}" length="${robot_wheel_length}"/>
+            </geometry>
+        </collision>
+    </link>
 
-		<collision>
-			<origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
-			<geometry>
-				<cylinder radius="${robot_wheel_radius}" length="${robot_wheel_length}"/>
-			</geometry>
-		</collision>
+    <!-- Right Wheel Front -->
+    <link name="right_wheel_front">
+        <inertial>
+            <mass value="${robot_wheel_mass}"/>
+            <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
+            <inertia
+                ixx="0.1" ixy="0.0" ixz="0.0"
+                iyy="0.1" iyz="0.0"
+                izz="0.1"
+            />
+        </inertial>
 
-	</link>
+        <visual>
+            <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
+            <geometry>
+                <cylinder radius="${robot_wheel_radius}" length="${robot_wheel_length}"/>
+            </geometry>
+        </visual>
 
-	<!-- Right Wheel Front-->
-	<link name="right_wheel_front">
-		<inertial>
-			<mass value="${robot_wheel_mass}"/>
-			<origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
-			<inertia
-				ixx="0.1" ixy="0.0" ixz="0.0"
-				iyy="0.1" iyz="0.0"
-				izz="0.1"
-			/>
-		</inertial>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
+            <geometry>
+                <cylinder radius="${robot_wheel_radius}" length="${robot_wheel_length}"/>
+            </geometry>
+        </collision>
+    </link>
 
-		<visual>
-			<origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
-			<geometry>
-				<cylinder radius="${robot_wheel_radius}" length="${robot_wheel_length}"/>
-			</geometry>
-		</visual>
+    <!-- Left Wheel Back -->
+    <link name="left_wheel_back">
+        <inertial>
+            <mass value="${robot_wheel_mass}"/>
+            <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
+            <inertia
+                ixx="0.1" ixy="0.0" ixz="0.0"
+                iyy="0.1" iyz="0.0"
+                izz="0.1"
+            />
+        </inertial>
 
-		<collision>
-			<origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
-			<geometry>
-				<cylinder radius="${robot_wheel_radius}" length="${robot_wheel_length}"/>
-			</geometry>
-		</collision>
+        <visual>
+            <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
+            <geometry>
+                <cylinder radius="${robot_wheel_radius}" length="${robot_wheel_length}"/>
+            </geometry>
+        </visual>
 
-	</link>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
+            <geometry>
+                <cylinder radius="${robot_wheel_radius}" length="${robot_wheel_length}"/>
+            </geometry>
+        </collision>
+    </link>
 
-	<!-- Left wheel Back-->
-	<link name="left_wheel_back">
-		<inertial>
-			<mass value="${robot_wheel_mass}"/>
-			<origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
-			<inertia
-				ixx="0.1" ixy="0.0" ixz="0.0"
-				iyy="0.1" iyz="0.0"
-				izz="0.1"
-			/>
-		</inertial>
+    <!-- Left Wheel Front -->
+    <link name="left_wheel_front">
+        <inertial>
+            <mass value="${robot_wheel_mass}"/>
+            <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
+            <inertia
+                ixx="0.1" ixy="0.0" ixz="0.0"
+                iyy="0.1" iyz="0.0"
+                izz="0.1"
+            />
+        </inertial>
 
-		<visual>
-			<origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
-			<geometry>
-				<cylinder radius="${robot_wheel_radius}" length="${robot_wheel_length}"/>
-			</geometry>
-		</visual>
+        <visual>
+            <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
+            <geometry>
+                <cylinder radius="${robot_wheel_radius}" length="${robot_wheel_length}"/>
+            </geometry>
+        </visual>
 
-		<collision>
-			<origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
-			<geometry>
-				<cylinder radius="${robot_wheel_radius}" length="${robot_wheel_length}"/>
-			</geometry>
-		</collision>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
+            <geometry>
+                <cylinder radius="${robot_wheel_radius}" length="${robot_wheel_length}"/>
+            </geometry>
+        </collision>
+    </link>
 
-	</link>
+    <!-- Right Wheel Joint Back -->
+    <joint type="continuous" name="right_wheel_hinge_back">
+        <origin xyz="-0.2 -0.30 0" rpy="0 0 0" />
+        <parent link="link_chassis"/>
+        <child link="right_wheel_back" />
+        <axis xyz="0 1 0" />
+        <limit effort="10000" velocity="1000" />
+        <dynamics damping="1.0" friction="1.0" />
+    </joint>
 
-	<!-- Left wheel Front-->
-	<link name="left_wheel_front">
-		<inertial>
-			<mass value="${robot_wheel_mass}"/>
-			<origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
-			<inertia
-				ixx="0.1" ixy="0.0" ixz="0.0"
-				iyy="0.1" iyz="0.0"
-				izz="0.1"
-			/>
-		</inertial>
+    <!-- Right Wheel Joint Front -->
+    <joint type="continuous" name="right_wheel_hinge_front">
+        <origin xyz="0.2 -0.30 0" rpy="0 0 0" />
+        <parent link="link_chassis"/>
+        <child link="right_wheel_front" />
+        <axis xyz="0 1 0" />
+        <limit effort="10000" velocity="1000" />
+        <dynamics damping="1.0" friction="1.0" />
+    </joint>
 
-		<visual>
-			<origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
-			<geometry>
-				<cylinder radius="${robot_wheel_radius}" length="${robot_wheel_length}"/>
-			</geometry>
-		</visual>
+    <!-- Left Wheel Joint Back -->
+    <joint type="continuous" name="left_wheel_hinge_back">
+        <origin xyz="-0.2 0.30 0" rpy="0 0 0" />
+        <parent link="link_chassis"/>
+        <child link="left_wheel_back" />
+        <axis xyz="0 1 0" />
+        <limit effort="10000" velocity="1000" />
+        <dynamics damping="1.0" friction="1.0" />
+    </joint>
 
-		<collision>
-			<origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
-			<geometry>
-				<cylinder radius="${robot_wheel_radius}" length="${robot_wheel_length}"/>
-			</geometry>
-		</collision>
-	</link>
+    <!-- Left Wheel Joint Front -->
+    <joint type="continuous" name="left_wheel_hinge_front">
+        <origin xyz="0.2 0.30 0" rpy="0 0 0" />
+        <parent link="link_chassis"/>
+        <child link="left_wheel_front" />
+        <axis xyz="0 1 0" />
+        <limit effort="10000" velocity="1000" />
+        <dynamics damping="1.0" friction="1.0" />
+    </joint>
 
-	<!-- Right Wheel Joint Back-->
-	<joint type="continuous" name="right_wheel_hinge_back">
-	    <origin xyz="-0.2 -0.30 0" rpy="0 0 0" />
-	    <parent link="link_chassis"/>
-	    <child link="right_wheel_back" />
-	    <axis xyz="0 1 0" rpy="0 0 0" />
-	    <limit effort="10000" velocity="1000" />
-	    <dynamics damping="1.0" friction="1.0" />
-	</joint>
+    <!-- LiDAR Sensor -->
+    <link name="lidar_link">
+        <inertial>
+            <mass value="0.5"/>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <inertia
+                ixx="0.001" ixy="0" ixz="0"
+                iyy="0.001" iyz="0"
+                izz="0.001"
+            />
+        </inertial>
 
-	<!-- Right Wheel Joint Front-->
-	<joint type="continuous" name="right_wheel_hinge_front">
-	    <origin xyz="0.2 -0.30 0" rpy="0 0 0" />
-	    <parent link="link_chassis"/>
-	    <child link="right_wheel_front" />
-	    <axis xyz="0 1 0" rpy="0 0 0" />
-	    <limit effort="10000" velocity="1000" />
-	    <dynamics damping="1.0" friction="1.0" />
-	</joint>
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <cylinder radius="0.05" length="0.1"/>
+            </geometry>
+        </visual>
 
-	<!-- Left Wheel Joint Back-->
-	<joint type="continuous" name="left_wheel_hinge_back">
-	    <origin xyz="-0.2 0.30 0" rpy="0 0 0" />
-	    <parent link="link_chassis"/>
-	    <child link="left_wheel_back" />
-	    <axis xyz="0 1 0" rpy="0 0 0" />
-	    <limit effort="10000" velocity="1000" />
-	    <dynamics damping="1.0" friction="1.0" />
-	</joint>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <cylinder radius="0.05" length="0.1"/>
+            </geometry>
+        </collision>
+    </link>
 
-	<!-- Left Wheel Joint Front-->
-	<joint type="continuous" name="left_wheel_hinge_front">
-	    <origin xyz="0.2 0.30 0" rpy="0 0 0" />
-	    <parent link="link_chassis"/>
-	    <child link="left_wheel_front" />
-	    <axis xyz="0 1 0" rpy="0 0 0" />
-	    <limit effort="10000" velocity="1000" />
-	    <dynamics damping="1.0" friction="1.0" />
-	</joint>
+    <joint name="lidar_joint" type="fixed">
+        <parent link="link_chassis"/>
+        <child link="lidar_link"/>
+        <origin xyz="0 0 0.25" rpy="0 0 0"/>
+    </joint>
+
 </robot>
+
