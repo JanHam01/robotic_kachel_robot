@@ -7,6 +7,6 @@ Idee des Roboters:
 - Grid Feld mit N x M Feldern
 - Startposition (0,0)
 - Ziel Position (X,Y)
-- Auf machen Feldern (X_h,Y_h) befinden sich Hindernisse, die umfahren werden müssen.
+- Auf manchen Feldern (X_h,Y_h) befinden sich Hindernisse, die umfahren werden müssen.
 [ ] Ziel: Roboter muss Endziel finden
-[ ] Zusatz Rute als Liste zurückgeben
+[ ] Zusatz: Route als Liste zurückgeben
