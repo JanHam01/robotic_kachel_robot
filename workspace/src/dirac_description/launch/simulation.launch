@@ -7,8 +7,11 @@
     <arg name="yaw" default="0"/>
     <arg name="robot_name" default="dirac"/>
     <arg name="urdf_file" default="$(find dirac_description)/urdf/dirac.urdf" />
+    
 
     <param name="dirac_description" command="$(find xacro)/xacro  --inorder $(arg urdf_file)" />
+    
+    <node name="dirac_control" pkg="dirac_description" type="dirac_control" output="screen" />
 
     <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
         <param name="use_gui" value="false" />
