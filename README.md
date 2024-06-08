@@ -2,7 +2,7 @@
 # Projekt für die Robotik Vorlesung an der DHBW Mannheim/ TINF22IT1.
 Idee des Roboters:
 
-- 4 Rad Kasten Robotter
+- 4 Rad Kasten Roboter
 - Lidar Sensor
 - Grid Feld mit N x M Feldern
 - Startposition (0,0)
