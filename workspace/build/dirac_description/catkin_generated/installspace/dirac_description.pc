@@ -1,8 +1,0 @@
-prefix=/home/robotik/Documents/project/robotic_kachel_robot/workspace/install
-
-Name: dirac_description
-Description: Description of dirac_description
-Version: 0.0.0
-Cflags: 
-Libs: -L${prefix}/lib 
-Requires: 

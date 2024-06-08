@@ -1,2 +1,0 @@
-dirac_description
--DCATKIN_DEVEL_PREFIX=/home/robotik/Documents/project/robotic_kachel_robot/workspace/devel -DCMAKE_INSTALL_PREFIX=/home/robotik/Documents/project/robotic_kachel_robot/workspace/install -G Unix Makefiles
