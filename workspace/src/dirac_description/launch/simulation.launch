@@ -1,0 +1,35 @@
+<launch>
+    <arg name="x" default="0"/>
+    <arg name="y" default="0"/>
+    <arg name="z" default="0"/>
+    <arg name="roll" default="0"/>
+    <arg name="pitch" default="0"/>
+    <arg name="yaw" default="0"/>
+    <arg name="robot_name" default="dirac"/>
+    <arg name="urdf_file" default="$(find dirac_description)/urdf/dirac.urdf" />
+
+    <param name="dirac_description" command="$(find xacro)/xacro  --inorder $(arg urdf_file)" />
+
+    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+        <param name="use_gui" value="false" />
+    </node>
+
+    <!-- Spawn My Robot -->
+    <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+            args="-urdf -param dirac_description -model dirac
+                        -x $(arg x) -y $(arg y) -z $(arg z)
+                        -R $(arg roll) -P $(arg pitch) -Y $(arg yaw)"/>
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="false" output="screen">
+    	<remap from="robot_description" to="dirac_description" />
+    </node>
+
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find dirac_description)/rviz/dirac.rviz" />
+
+    <!-- Launch Gazebo World -->
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+            <arg name="use_sim_time" value="true"/>
+            <arg name="verbose" value="false"/>
+            <arg name="debug" value="false"/>
+            <arg name="gui" value="true" />
+    </include>
+</launch>
