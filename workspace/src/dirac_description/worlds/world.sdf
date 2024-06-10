@@ -81,6 +81,14 @@
           </material>
           <pose>0 0 1 0 -0 0</pose>
         </visual>
+        <collision name="collision_stem">
+          <geometry>
+            <box>
+              <size>2 1 2</size>
+            </box>
+          </geometry>
+           <pose>0 0 1 0 -0 0</pose>
+        </collision>
         <self_collide>0</self_collide>
         <enable_wind>0</enable_wind>
         <kinematic>0</kinematic>
@@ -102,6 +110,14 @@
           </material>
           <pose>0 0 1 0 -0 0</pose>
         </visual>
+        <collision name="collision_stem1">
+          <geometry>
+            <box>
+              <size>2 1 2</size>
+            </box>
+          </geometry>
+           <pose>0 0 1 0 -0 0</pose>
+        </collision>
         <self_collide>0</self_collide>
         <enable_wind>0</enable_wind>
         <kinematic>0</kinematic>
@@ -123,6 +139,14 @@
           </material>
           <pose>0 1 0 0 -0 0</pose>
         </visual>
+        <collision name="collision_stem2">
+          <geometry>
+            <box>
+              <size>2 1 2</size>
+            </box>
+          </geometry>
+           <pose>0 1 0 0 -0 0</pose>
+        </collision>
         <self_collide>0</self_collide>
         <enable_wind>0</enable_wind>
         <kinematic>0</kinematic>
@@ -144,6 +168,14 @@
           </material>
           <pose>0 0 0.5 0 -0 0</pose>
         </visual>
+        <collision name="collision_stem3">
+          <geometry>
+            <box>
+              <size>1 1 1</size>
+            </box>
+          </geometry>
+           <pose>0 0 0.5 0 -0 0</pose>
+        </collision>
         <visual name='foliage'>
           <geometry>
             <sphere>
@@ -177,6 +209,14 @@
           </material>
           <pose>0 0 0.5 0 -0 0</pose>
         </visual>
+        <collision name="collision_stem4">
+          <geometry>
+            <box>
+              <size>1 1 1</size>
+            </box>
+          </geometry>
+           <pose>0 0 0.5 0 -0 0</pose>
+        </collision>
         <visual name='foliage'>
           <geometry>
             <sphere>
@@ -210,6 +250,14 @@
           </material>
           <pose>0 0 0.5 0 -0 0</pose>
         </visual>
+        <collision name="collision_stem5">
+          <geometry>
+            <box>
+              <size>1 1 1</size>
+            </box>
+          </geometry>
+           <pose>0 0 0.5 0 -0 0</pose>
+        </collision>
         <visual name='foliage'>
           <geometry>
             <sphere>
@@ -243,6 +291,14 @@
           </material>
           <pose>0 0 0.5 0 -0 0</pose>
         </visual>
+        <collision name="collision_stem6">
+          <geometry>
+            <box>
+              <size>1 1 1</size>
+            </box>
+          </geometry>
+           <pose>0 0 0.5 0 -0 0</pose>
+        </collision>
         <visual name='foliage'>
           <geometry>
             <sphere>
@@ -276,6 +332,14 @@
           </material>
           <pose>0 0 0.5 0 -0 0</pose>
         </visual>
+        <collision name="collision_stem7">
+          <geometry>
+            <box>
+              <size>1 1 1</size>
+            </box>
+          </geometry>
+           <pose>0 0 0.5 0 -0 0</pose>
+        </collision>
         <visual name='foliage'>
           <geometry>
             <sphere>
@@ -309,6 +373,14 @@
           </material>
           <pose>0 0 0.5 0 -0 0</pose>
         </visual>
+        <collision name="collision_stem8">
+          <geometry>
+            <box>
+              <size>1 1 1</size>
+            </box>
+          </geometry>
+           <pose>0 0 0.5 0 -0 0</pose>
+        </collision>
         <visual name='foliage'>
           <geometry>
             <sphere>
@@ -342,6 +414,14 @@
           </material>
           <pose>0 0 0.5 0 -0 0</pose>
         </visual>
+        <collision name="collision_stem9">
+          <geometry>
+            <box>
+              <size>1 1 1</size>
+            </box>
+          </geometry>
+           <pose>0 0 0.5 0 -0 0</pose>
+        </collision>
         <visual name='flower_head'>
           <geometry>
             <sphere>
@@ -375,6 +455,14 @@
           </material>
           <pose>0 0 0.5 0 -0 0</pose>
         </visual>
+        <collision name="collision_stem10">
+          <geometry>
+            <box>
+              <size>1 1 1</size>
+            </box>
+          </geometry>
+           <pose>0 0 0.5 0 -0 0</pose>
+        </collision>
         <visual name='flower_head'>
           <geometry>
             <sphere>
@@ -408,6 +496,14 @@
           </material>
           <pose>0 0 0.5 0 -0 0</pose>
         </visual>
+        <collision name="collision_stem11">
+          <geometry>
+            <box>
+              <size>1 1 1</size>
+            </box>
+          </geometry>
+           <pose>0 0 0.5 0 -0 0</pose>
+        </collision>
         <visual name='flower_head'>
           <geometry>
             <sphere>
@@ -441,6 +537,14 @@
           </material>
           <pose>0 0 0.5 0 -0 0</pose>
         </visual>
+        <collision name="collision_stem12">
+          <geometry>
+            <box>
+              <size>1 1 1</size>
+            </box>
+          </geometry>
+           <pose>0 0 0.5 0 -0 0</pose>
+        </collision>
         <visual name='flower_head'>
           <geometry>
             <sphere>
@@ -474,6 +578,14 @@
           </material>
           <pose>0 0 0.5 0 -0 0</pose>
         </visual>
+        <collision name="collision_stem13">
+          <geometry>
+            <box>
+              <size>1 1 1</size>
+            </box>
+          </geometry>
+           <pose>0 0 0.5 0 -0 0</pose>
+        </collision>
         <visual name='flower_head'>
           <geometry>
             <sphere>
