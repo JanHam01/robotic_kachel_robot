@@ -97,7 +97,7 @@ double prevError = 0.0;
 ros::Publisher cmd_vel_pub;
 
 // Current heading variable
-Vector2 currentPos{0,0};
+Vector2 currentPos{0.499997,0.500002}; //TODO Current pos: ( 0.499997 , 0.500002 ) 
 double currentHeading = 0.0;
 
 double stateChangeTimer = 0;
@@ -156,6 +156,8 @@ void pidControlCallback(const ros::TimerEvent& event)
 
         cmd_vel_msg.linear.x = pidOutput;
 
+        std::cout << "Current pos: ( " << currentPos.getX() << " , " << currentPos.getY() << " )\n"; 
+        std::cout << "Desired pos: ( " << desiredPos.getX() << " , " << desiredPos.getY() << " )\n";
         std::cout << "DRIVING - d: " << desiredHeading << " c: " << currentHeading << " diff: " << headingDiff << "\n";
         std::cout << "DRIVING - d: " << prevError << " PID out: " << pidOutput << "\n";
         if (headingDiff > 0.25) 
@@ -212,7 +214,7 @@ Vector2 turn_vector[ ] = {Vector2(turning_val, 0.0),
                                   Vector2(0.0, -turning_val)};
 
 void move_forward(void) {
-  while(currentControlStage != IDLE)ros::spinOnce();
+  while(currentControlStage != IDLE)ros::spinOnce(); 
   desiredPos = currentPos.addNew(orintation_vector[robot_orientation]);
   currentControlStage = DRIVING;
 }
@@ -231,7 +233,7 @@ void turn_right(void) {
   desiredPos = currentPos;
   robot_orientation = (dirac_orientation)(((int)robot_orientation - 1) % 4);
   desiredPos = currentPos.addNew(turn_vector[robot_orientation]);
-
+  
   currentControlStage = TURNING;
 }
 
@@ -262,7 +264,7 @@ int main(int argc, char** argv)
   // Create the ROS subscriber for the odometry topic
   ros::Subscriber odom_sub = nh.subscribe("/dirac_description/odom", 10, odomCallback);
 
-ros::Duration(10.0).sleep();
+ros::Duration(1.0).sleep();
   move_forward();
   turn_left();
   move_forward();
