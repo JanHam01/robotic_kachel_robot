@@ -10,3 +10,11 @@ Idee des Roboters:
 - Auf manchen Feldern (X_h,Y_h) befinden sich Hindernisse, die umfahren werden müssen.
 [ ] Ziel: Roboter muss Endziel finden
 [ ] Zusatz: Route als Liste zurückgeben
+
+
+Todo:
+- Basic Skills (Fahre nach vorne, drehe dich)
+- Ein Package für alles, Methoden für Richtungen
+- Lidar Sensor erkennt vorne, links, rechts
+- Gazebo Welt
+- Ziel
