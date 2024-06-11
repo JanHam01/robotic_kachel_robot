@@ -1,20 +1,10 @@
 # DIrected Robot Avoiding hindranCe --> DIRAC
 # Projekt für die Robotik Vorlesung an der DHBW Mannheim/ TINF22IT1.
-Idee des Roboters:
+Idee:
+Der Roboter DIRAC fährt auf einem 10x10 Grid zu einem festgelegten Ziel.
+Dabei muss er Hindernisse umfahren. 
+Um diese zu erkennen, besitzt der vierrädrige Kastenrobot DIRAC einen Lidar-Sensor.
+-[ ] Zusatz: Kann Route als Liste zurückgeben
 
-- 4 Rad Kasten Roboter
-- Lidar Sensor
-- Grid Feld mit N x M Feldern
-- Startposition (0,0)
-- Ziel Position (X,Y)
-- Auf manchen Feldern (X_h,Y_h) befinden sich Hindernisse, die umfahren werden müssen.
-[ ] Ziel: Roboter muss Endziel finden
-[ ] Zusatz: Route als Liste zurückgeben
-
-
-Todo:
-- Basic Skills (Fahre nach vorne, drehe dich)
-- Ein Package für alles, Methoden für Richtungen
-- Lidar Sensor erkennt vorne, links, rechts
-- Gazebo Welt
-- Ziel
+In der Umsetzung wurden die Basic Skills des Roboters implementiert (nach vorne fahren, links/rechts drehen, umdrehen). Der Lidar Sensor erkennt ebenfalls vorne, links und rechts. 
+Der Code besteht dabei aus einem Package, bestehend aus verschiedenen Methoden. Zudem ist eine Gazebo-Welt mit verschiedenen Hindernissen miteingebaut.
