@@ -97,7 +97,9 @@ double prevError = 0.0;
 ros::Publisher cmd_vel_pub;
 
 // Current heading variable
-Vector2 currentPos{0.499997,0.500002}; //TODO Current pos: ( 0.499997 , 0.500002 ) 
+Vector2 currentPos{0.499997,0.500002}; //TODO Current pos: ( 0.499997 , 0.500002 )
+//Vector2 origin_offset{0.499997,0.500002};
+//Vector2 idealisedPos{0.0, 0.0};
 double currentHeading = 0.0;
 
 double stateChangeTimer = 0;
@@ -131,9 +133,12 @@ void pidControlCallback(const ros::TimerEvent& event)
         cmd_vel_msg.angular.z = angular_vel;
         cmd_vel_pub.publish(cmd_vel_msg);
 
-        std::cout << "TURNING - d: " << desiredHeading << " c: " << currentHeading << " diff: " << headingDiff << "\n";
+        //std::cout << "TURNING - d: " << desiredHeading << " c: " << currentHeading << " diff: " << headingDiff << "\n";
         if (std::abs(desiredHeading - currentHeading) < 0.05)
         {
+          std::cout << "END OF TURNING\n";
+          std::cout << "Current pos: ( " << currentPos.getX() << " , " << currentPos.getY() << " )\n"; 
+          std::cout << "Desired pos: ( " << desiredPos.getX() << " , " << desiredPos.getY() << " )\n\n";
           currentControlStage = IDLE;
         }
       }
@@ -156,22 +161,25 @@ void pidControlCallback(const ros::TimerEvent& event)
 
         cmd_vel_msg.linear.x = pidOutput;
 
-        std::cout << "Current pos: ( " << currentPos.getX() << " , " << currentPos.getY() << " )\n"; 
-        std::cout << "Desired pos: ( " << desiredPos.getX() << " , " << desiredPos.getY() << " )\n";
-        std::cout << "DRIVING - d: " << desiredHeading << " c: " << currentHeading << " diff: " << headingDiff << "\n";
-        std::cout << "DRIVING - d: " << prevError << " PID out: " << pidOutput << "\n";
-        if (headingDiff > 0.25) 
+        //std::cout << "Current pos: ( " << currentPos.getX() << " , " << currentPos.getY() << " )\n"; 
+        //std::cout << "Desired pos: ( " << desiredPos.getX() << " , " << desiredPos.getY() << " )\n";
+        //std::cout << "DRIVING - d: " << desiredHeading << " c: " << currentHeading << " diff: " << headingDiff << "\n";
+        //std::cout << "DRIVING - d: " << prevError << " PID out: " << pidOutput << "\n";
+        /*if (headingDiff > 0.5) 
         {
           errorIntegral = 0.0;
           prevError = 0.0;
           currentControlStage = TURNING;
-        } 
+        } */
         
         cmd_vel_pub.publish(cmd_vel_msg);
 
-        if (desiredPos.subtractNew(currentPos).length() < 0.1)
-        {
-           currentControlStage = IDLE;
+        if (desiredPos.subtractNew(currentPos).length() < 0.3)
+        { 
+          std::cout << "END OF DRIVING\n";
+          std::cout << "Current pos: ( " << currentPos.getX() << " , " << currentPos.getY() << " )\n"; 
+          std::cout << "Desired pos: ( " << desiredPos.getX() << " , " << desiredPos.getY() << " )\n\n";
+          currentControlStage = IDLE;
         }
       }
       break;
@@ -215,7 +223,10 @@ Vector2 turn_vector[ ] = {Vector2(turning_val, 0.0),
 
 void move_forward(void) {
   while(currentControlStage != IDLE)ros::spinOnce(); 
+  //idealisedPos = idealisedPos.addNew(orintation_vector[robot_orientation]);
+  //desiredPos = idealisedPos.addNew(origin_offset);
   desiredPos = currentPos.addNew(orintation_vector[robot_orientation]);
+  desiredPos = Vector2((float)(((int) desiredPos.getX()/1)+0.5), (float) ((int) desiredPos.getY()/1)+0.5);
   currentControlStage = DRIVING;
 }
 
@@ -224,7 +235,6 @@ void turn_left(void) {
   desiredPos = currentPos;
   robot_orientation = (dirac_orientation)(((int)robot_orientation + 1) % 4);
   desiredPos = currentPos.addNew(turn_vector[robot_orientation]);
-
   currentControlStage = TURNING;
 }
 
@@ -233,7 +243,7 @@ void turn_right(void) {
   desiredPos = currentPos;
   robot_orientation = (dirac_orientation)(((int)robot_orientation - 1) % 4);
   desiredPos = currentPos.addNew(turn_vector[robot_orientation]);
-  
+
   currentControlStage = TURNING;
 }
 
@@ -274,7 +284,21 @@ ros::Duration(5.0).sleep();
   move_forward();
   move_forward();
   move_forward();
-  turn_arround(); 
+  turn_left();
+  move_forward(); 
+  move_forward(); 
+  move_forward(); 
+  move_forward(); 
+  move_forward(); 
+  move_forward(); 
+  turn_right();
+  move_forward(); 
+  move_forward(); 
+  move_forward(); 
+  turn_left();
+  move_forward();
+  turn_right();
+  move_forward();
 
   // Start the ROS node main loop
   ros::spin();
