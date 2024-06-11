@@ -4,6 +4,7 @@
 #include <tf/transform_datatypes.h>
 #include <cmath>
 #include <iostream>
+#include <std_msgs/Int32.h>
 
 #include "util.h"
 #include "a_star/a_star.h"
@@ -45,6 +46,10 @@ double currentHeading = 0.0;
 
 double stateChangeTimer = 0;
 
+
+int front_distance = 0;
+int left_distance = 0;
+int right_distance = 0;
 
 // Callback function for the PID control
 void pidControlCallback(const ros::TimerEvent& event)
@@ -136,6 +141,21 @@ void odomCallback(const nav_msgs::Odometry::ConstPtr& msg)
   currentHeading = tf::getYaw(msg->pose.pose.orientation);
 }
 
+void frontDistanceCallback(const std_msgs::Int32::ConstPtr& msg)
+{
+  front_distance = msg->data;
+}
+
+void leftDistanceCallback(const std_msgs::Int32::ConstPtr& msg)
+{
+  left_distance = msg->data;
+}
+
+void rightDistanceCallback(const std_msgs::Int32::ConstPtr& msg)
+{
+  right_distance = msg->data;
+}
+
 enum dirac_orientation {
   FORWARD = 0,
   RIGHT = 1,
@@ -206,6 +226,11 @@ int main(int argc, char** argv)
 
   // Create the ROS subscriber for the odometry topic
   ros::Subscriber odom_sub = nh.subscribe("/dirac_description/odom", 10, odomCallback);
+
+ ros::Subscriber front_dist_sub = nh.subscribe("/front_distance", 10, frontDistanceCallback);
+  ros::Subscriber left_dist_sub = nh.subscribe("/left_distance", 10, leftDistanceCallback);
+  ros::Subscriber right_dist_sub = nh.subscribe("/right_distance", 10, rightDistanceCallback);
+
 
   // ReSharper disable once CppExpressionWithoutSideEffects
   ros::Duration(5.0).sleep();
