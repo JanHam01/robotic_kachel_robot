@@ -165,7 +165,7 @@ void rightDistanceCallback(const std_msgs::Int32::ConstPtr& msg)
 }
 
 enum dirac_orientation {
-  FORWARD = 0,
+  FORWARD = 0,  
   RIGHT = 1,
   BACKWARD = 2,
   LEFT = 3,
@@ -220,6 +220,43 @@ void turn_arround() {
   currentControlStage = TURNING;
 }
 
+int getCurrentX(){
+	return static_cast<int>(std::round(currentPos.getX()));
+}
+int getCurrentY(){
+	return static_cast<int>(std::round(currentPos.getY()));
+}
+Vector2 getObsPlace(int mode){
+  double x;
+  double y;
+  if(mode ==1){
+    x = getCurrentX() + front_distance*(orintation_vector[robot_orientation].getX());
+	  y = getCurrentY() + front_distance*(orintation_vector[robot_orientation].getY());
+  }
+  if(mode == 2){
+    x = getCurrentX() + left_distance*(orintation_vector[(robot_orientation+3)%4].getX());
+    y = getCurrentY() + left_distance*(orintation_vector[(robot_orientation+3)%4].getY());
+  }
+  if(mode ==3){
+    x = getCurrentX() + left_distance*(orintation_vector[(robot_orientation+1)%4].getX());
+    y = getCurrentY() + left_distance*(orintation_vector[(robot_orientation+1)%4].getY());
+  }
+  return Vector2(x,y);
+	
+}
+
+void fillObstacles(std::vector<Vector2> *currentObs){
+	if(front_distance>0){
+		currentObs->push_back(getObsPlace(1));
+	}
+	if(left_distance>0){
+    currentObs->push_back(getObsPlace(2));
+	}
+	if(right_distance>0){
+    currentObs->push_back(getObsPlace(3));
+	}
+}
+
 int main(int argc, char** argv)
 {
   // Initialize the ROS node
@@ -242,7 +279,12 @@ int main(int argc, char** argv)
   ros::Subscriber left_dist_sub = nh.subscribe("/left_distance", 10, leftDistanceCallback);
   ros::Subscriber right_dist_sub = nh.subscribe("/right_distance", 10, rightDistanceCallback);
 
-
+  AStar newAStar();
+  
+  std::vector<Vector2> obstacles;
+  fillObstacles(&obstacles);
+  
+  
   // ReSharper disable once CppExpressionWithoutSideEffects
   ros::Duration(5.0).sleep();
   move_forward();
