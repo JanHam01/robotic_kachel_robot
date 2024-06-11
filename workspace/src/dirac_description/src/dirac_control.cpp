@@ -191,8 +191,6 @@ void turn_arround() {
 
 int main(int argc, char** argv)
 {
-
-
   // Initialize the ROS node
   ros::init(argc, argv, "robot_control_node");
   ros::NodeHandle nh;
@@ -210,7 +208,7 @@ int main(int argc, char** argv)
   ros::Subscriber odom_sub = nh.subscribe("/dirac_description/odom", 10, odomCallback);
 
   // ReSharper disable once CppExpressionWithoutSideEffects
-  ros::Duration(1.0).sleep();
+  ros::Duration(5.0).sleep();
   move_forward();
   turn_left();
   move_forward();
