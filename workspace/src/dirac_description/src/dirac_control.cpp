@@ -4,7 +4,9 @@
 #include <tf/transform_datatypes.h>
 #include <cmath>
 #include <iostream>
-#include <math.h>
+
+#include "util.h"
+#include "a_star/a_star.h"
 
 enum controlStage {
   TURNING,
@@ -12,82 +14,23 @@ enum controlStage {
   IDLE,
 };
 
-class Vector2 {
-  public:
-    Vector2(double x, double y) : 
-    m_x(x), m_y(y)
-    {
-
-    }
-
-    double getX() { return m_x;}
-    double getY() { return m_y;}
-
-    Vector2 normalizeNew()
-    {
-      Vector2 t(m_x, m_y);
-      double length = t.length();
-      t.m_x /= length;
-      t.m_y /= length;
-      return t;
-    }
-
-    Vector2 addNew(Vector2 o)
-    {
-      Vector2 t(m_x, m_y);
-      t.m_x += o.m_x;
-      t.m_y += o.m_y;
-      return t;
-    }
-
-    Vector2 subtractNew(Vector2 o)
-    {
-
-      Vector2 t(m_x, m_y);
-      t.m_x -= o.m_x;
-      t.m_y -= o.m_y;
-      return t;
-    }
-
-    double length()
-    {
-      return std::sqrt(m_x * m_x + m_y * m_y);
-    }
-
-    double dot(Vector2 o)
-    {
-      return m_x * o.m_x + m_y * o.m_y;
-    }
-
-    double getAngle()
-    {
-      return std::atan2(m_y, m_x);
-    }
-
-  private:
-    double m_x;
-    double m_y;
-};
 
 
-double normalizeAngle(double angle)
-{
-  // Don't call this a hack! It's numeric!
-  return angle - (std::round((angle / (M_PI*2)) - 1e-6) * M_PI*2);
-}
+
+
 
 Vector2 desiredPos{0,0};
 controlStage currentControlStage = IDLE;
 double lastTime = 0;
 
 // Velocity limits
-const double maxAngularVel = 3;
-const double maxVel = 0.8;
+constexpr double maxAngularVel = 3;
+constexpr double maxVel = 0.8;
 
 // PID control gains
-const double kp = 0.2;
-const double ki = 0.15;
-const double kd = 0.05;
+constexpr double kp = 0.2;
+constexpr double ki = 0.15;
+constexpr double kd = 0.05;
 
 // Variables for PID control
 double errorIntegral = 0.0;
@@ -207,40 +150,40 @@ Vector2 orintation_vector[ ] = {Vector2(1.0, 0.0),
                                 Vector2(-1.0, 0),
                                 Vector2(0.0, -1.0)};
 
-const float turning_val = 9999999.0;
+constexpr float turning_val = 9999999.0;
 Vector2 turn_vector[ ] = {Vector2(turning_val, 0.0),
                                   Vector2(0.0, turning_val),
                                   Vector2(-turning_val, 0),
                                   Vector2(0.0, -turning_val)};
 
-void move_forward(void) {
+void move_forward() {
   while(currentControlStage != IDLE)ros::spinOnce(); 
   desiredPos = currentPos.addNew(orintation_vector[robot_orientation]);
   currentControlStage = DRIVING;
 }
 
-void turn_left(void) {
+void turn_left() {
   while(currentControlStage != IDLE)ros::spinOnce();
   desiredPos = currentPos;
-  robot_orientation = (dirac_orientation)(((int)robot_orientation + 1) % 4);
+  robot_orientation = static_cast<dirac_orientation>((robot_orientation + 1) % 4);
   desiredPos = currentPos.addNew(turn_vector[robot_orientation]);
 
   currentControlStage = TURNING;
 }
 
-void turn_right(void) {
+void turn_right() {
   while(currentControlStage != IDLE)ros::spinOnce();
   desiredPos = currentPos;
-  robot_orientation = (dirac_orientation)(((int)robot_orientation - 1) % 4);
+  robot_orientation = static_cast<dirac_orientation>((robot_orientation - 1) % 4);
   desiredPos = currentPos.addNew(turn_vector[robot_orientation]);
   
   currentControlStage = TURNING;
 }
 
-void turn_arround(void) {
+void turn_arround() {
   while(currentControlStage != IDLE)ros::spinOnce();
   desiredPos = currentPos;
-  robot_orientation = (dirac_orientation)(((int)robot_orientation + 2) % 4);
+  robot_orientation = static_cast<dirac_orientation>((robot_orientation + 2) % 4);
   desiredPos = currentPos.addNew(turn_vector[robot_orientation]);
 
   currentControlStage = TURNING;
@@ -248,6 +191,8 @@ void turn_arround(void) {
 
 int main(int argc, char** argv)
 {
+
+
   // Initialize the ROS node
   ros::init(argc, argv, "robot_control_node");
   ros::NodeHandle nh;
@@ -264,7 +209,8 @@ int main(int argc, char** argv)
   // Create the ROS subscriber for the odometry topic
   ros::Subscriber odom_sub = nh.subscribe("/dirac_description/odom", 10, odomCallback);
 
-ros::Duration(1.0).sleep();
+  // ReSharper disable once CppExpressionWithoutSideEffects
+  ros::Duration(1.0).sleep();
   move_forward();
   turn_left();
   move_forward();
@@ -274,7 +220,7 @@ ros::Duration(1.0).sleep();
   move_forward();
   move_forward();
   move_forward();
-  turn_arround(); 
+  turn_arround();
 
   // Start the ROS node main loop
   ros::spin();
