@@ -122,18 +122,12 @@ void pidControlCallback(const ros::TimerEvent& event)
         
         cmd_vel_pub.publish(cmd_vel_msg);
 
-<<<<<<< HEAD
         if (desiredPos.subtractNew(currentPos).length() < 0.3)
         { 
           std::cout << "END OF DRIVING\n";
           std::cout << "Current pos: ( " << currentPos.getX() << " , " << currentPos.getY() << " )\n"; 
           std::cout << "Desired pos: ( " << desiredPos.getX() << " , " << desiredPos.getY() << " )\n\n";
           currentControlStage = IDLE;
-=======
-        if ((desiredPos -currentPos).length() < 0.1)
-        {
-           currentControlStage = IDLE;
->>>>>>> 75c8b810259096c2341598ad54ef9a327f6256ba
         }
       }
       break;
@@ -192,43 +186,28 @@ Vector2 turn_vector[ ] = {Vector2(turning_val, 0.0),
 
 void move_forward() {
   while(currentControlStage != IDLE)ros::spinOnce(); 
-<<<<<<< HEAD
   //idealisedPos = idealisedPos.addNew(orintation_vector[robot_orientation]);
   //desiredPos = idealisedPos.addNew(origin_offset);
   desiredPos = currentPos.addNew(orintation_vector[robot_orientation]);
   desiredPos = Vector2((float)(((int) desiredPos.getX()/1)+0.5), (float) ((int) desiredPos.getY()/1)+0.5);
-=======
-  desiredPos = currentPos + orintation_vector[robot_orientation];
->>>>>>> 75c8b810259096c2341598ad54ef9a327f6256ba
   currentControlStage = DRIVING;
 }
 
 void turn_left() {
   while(currentControlStage != IDLE)ros::spinOnce();
   desiredPos = currentPos;
-<<<<<<< HEAD
-  robot_orientation = (dirac_orientation)(((int)robot_orientation + 1) % 4);
-  desiredPos = currentPos.addNew(turn_vector[robot_orientation]);
-=======
   robot_orientation = static_cast<dirac_orientation>((robot_orientation + 1) % 4);
   desiredPos = currentPos + turn_vector[robot_orientation];
 
->>>>>>> 75c8b810259096c2341598ad54ef9a327f6256ba
   currentControlStage = TURNING;
 }
 
 void turn_right() {
   while(currentControlStage != IDLE)ros::spinOnce();
   desiredPos = currentPos;
-<<<<<<< HEAD
-  robot_orientation = (dirac_orientation)(((int)robot_orientation - 1) % 4);
-  desiredPos = currentPos.addNew(turn_vector[robot_orientation]);
-
-=======
   robot_orientation = static_cast<dirac_orientation>((robot_orientation - 1) % 4);
   desiredPos = currentPos + turn_vector[robot_orientation];
   
->>>>>>> 75c8b810259096c2341598ad54ef9a327f6256ba
   currentControlStage = TURNING;
 }
 
@@ -275,7 +254,6 @@ int main(int argc, char** argv)
   move_forward();
   move_forward();
   move_forward();
-<<<<<<< HEAD
   turn_left();
   move_forward(); 
   move_forward(); 
@@ -291,9 +269,6 @@ int main(int argc, char** argv)
   move_forward();
   turn_right();
   move_forward();
-=======
-  turn_arround();
->>>>>>> 75c8b810259096c2341598ad54ef9a327f6256ba
 
   // Start the ROS node main loop
   ros::spin();
