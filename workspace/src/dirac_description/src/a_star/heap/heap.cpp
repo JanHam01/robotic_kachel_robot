@@ -75,3 +75,8 @@ bool Heap::contains(Node* other) const {
 bool Heap::isEmpty() const {
     return count == 0;
 }
+
+void Heap::clear() {
+    list.clear();
+    count = 0;
+}

@@ -21,6 +21,7 @@ public:
     void updateItem(Node* node);
     bool contains(Node* other) const;
     bool isEmpty() const;
+    void clear();
 };
 
 #endif // HEAP_H

@@ -4,9 +4,14 @@
 
 
 AStar::~AStar() {
+    clearAllNodes();
+}
+
+void AStar::clearAllNodes() {
     for (Node* node : allNodes) {
         delete node;
     }
+    allNodes.clear();
 }
 
 Node* AStar::getNode(const Vector2 &pos, Node* parent) {
@@ -32,7 +37,7 @@ int AStar::getDistanceToPoint(const Node *a, const Vector2& b) {
 
 
 
-std::vector<Vector2> AStar::getPath(const Vector2 &start, const Vector2 &end, std::vector<Vector2> &obstacles) {
+std::vector<Vector2> AStar::getPath(const Vector2 &start, const Vector2 &end, std::vector<Vector2> &obstacles, bool motion) {
 
 
     openList.add(getNode(start, nullptr));
@@ -83,12 +88,16 @@ std::vector<Vector2> AStar::getPath(const Vector2 &start, const Vector2 &end, st
         path.emplace_back(current->getX(), current->getY());
         current = current->getParent();
     }
+    if (motion)
+        path = pathToMotion(path);
 
-    std::vector<Vector2> motionPoints = pathToMotion(path);
+    std::reverse(path.begin(), path.end());
 
-    std::reverse(motionPoints.begin(), motionPoints.end());
+    openList.clear();
+    closedList.clear();
+    clearAllNodes();
 
-    return motionPoints;
+    return path;
 }
 
 std::vector<Vector2> AStar::pathToMotion(std::vector<Vector2>& path) {

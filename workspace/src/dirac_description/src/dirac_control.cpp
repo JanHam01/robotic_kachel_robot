@@ -229,12 +229,12 @@ Vector2 getObsPlace(int mode){
 	  y = getCurrentY() + front_distance*(orintation_vector[robot_orientation].getY());
   }
   if(mode == 2){
-    x = getCurrentX() + left_distance*(orintation_vector[(robot_orientation+3)%4].getX());
-    y = getCurrentY() + left_distance*(orintation_vector[(robot_orientation+3)%4].getY());
+    x = getCurrentX() + left_distance*(orintation_vector[(robot_orientation+1)%4].getX());
+    y = getCurrentY() + left_distance*(orintation_vector[(robot_orientation+1)%4].getY());
   }
   if(mode ==3){
-    x = getCurrentX() + right_distance*(orintation_vector[(robot_orientation+1)%4].getX());
-    y = getCurrentY() + right_distance*(orintation_vector[(robot_orientation+1)%4].getY());
+    x = getCurrentX() + right_distance*(orintation_vector[(robot_orientation+3)%4].getX());
+    y = getCurrentY() + right_distance*(orintation_vector[(robot_orientation+3)%4].getY());
   }
   return Vector2(x,y);
 	
@@ -277,7 +277,7 @@ dirac_orientation whichWayToTurn(Vector2 dir){
   else if(dir.getX()==0 && dir.getY()>0){
     dirToDIrac = RIGHT;
   }
-  return dirac_orientation(std::abs(dirToDIrac- robot_orientation));
+  return dirac_orientation(std::abs(dirToDIrac - robot_orientation));
 }
 
 AStar theAStar;
@@ -288,32 +288,33 @@ bool ready = false;
 
 void controlCallback(const ros::TimerEvent&) {
    if(!ready){
-   	return;
+     return;
    }
    if (getCurrentX() == static_cast<int>(endPos.getX()) && getCurrentY() == static_cast<int>(endPos.getY())) {
         ROS_INFO("Goal reached!");
         return;
     }
     fillObstacles(obstacles);
-    
+
+    for (auto car : obstacles) {
+      std::cout << "Obstacle " << car.getX() << " " << car.getY() << std::endl;
+    }
+
+   std::cout << "Current pos: ( " << currentPos.getX() << " , " << currentPos.getY() << " )\n";
+
+  std::cout << "End pos: ( " << endPos.getX() << " , " << endPos.getY() << " )\n";
+
     path.clear();
     path = theAStar.getPath(currentPos,endPos, obstacles);
-    
-    if (path.size() < 2) {
-        ROS_WARN("Path too short or invalid.");
-        return;
-    }
-    
+
     std::cout<<currentPos.getX()<<std::endl;
-    std::cout<<path.at(0).getX()<<path.at(0).getY()<<std::endl;
-    
-    std::cout<<path.at(1).getX()<<path.at(1).getY()<<std::endl;
-    std::cout<<path.at(2).getX()<<path.at(2).getY()<<std::endl;
-    std::cout<<path.at(3).getX()<<path.at(3).getY()<<std::endl;
-    
+    for (auto &p : path)
+        std::cout << "Path " << p.getX() << " " << p.getY() << std::endl;
+
+
     auto dir = path.front();
     dirac_orientation turn = whichWayToTurn(dir);
-    std::cout<<"make"<<turn<<std::endl;
+    std::cout<<"make "<<turn<<std::endl;
     
     if(turn==LEFT){
       turn_left();

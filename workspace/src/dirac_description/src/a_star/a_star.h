@@ -33,7 +33,9 @@ private:
 public:
     ~AStar();
 
-    std::vector<Vector2> getPath(const Vector2& start, const Vector2& end, std::vector<Vector2>& obstacles);
+    void clearAllNodes();
+
+    std::vector<Vector2> getPath(const Vector2& start, const Vector2& end, std::vector<Vector2>& obstacles, bool motion = true);
 
 };
 
