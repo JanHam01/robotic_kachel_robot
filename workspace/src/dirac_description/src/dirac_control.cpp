@@ -240,16 +240,33 @@ Vector2 getObsPlace(int mode){
 	
 }
 
-void fillObstacles(std::vector<Vector2> *currentObs){
+void fillObstacles(std::vector<Vector2> &currentObs){
 	if(front_distance>0){
-		currentObs->push_back(getObsPlace(1));
+		currentObs.push_back(getObsPlace(1));
 	}
 	if(left_distance>0){
-    currentObs->push_back(getObsPlace(2));
+    currentObs.push_back(getObsPlace(2));
 	}
 	if(right_distance>0){
-    currentObs->push_back(getObsPlace(3));
+    currentObs.push_back(getObsPlace(3));
 	}
+}
+
+dirac_orientation whichWayToTurn(Vector2 dir){
+  dirac_orientation dirToDIrac;
+  if(dir.getX()>0 && dir.getY()==0){
+    dirToDIrac = FORWARD;
+  }
+  else if(dir.getX()<0 && dir.getY()==0){
+    dirToDIrac = BACKWARD;
+  }
+  else if(dir.getX()==0 && dir.getY()<0){
+    dirToDIrac = LEFT;
+  }
+  else if(dir.getX()==0 && dir.getY()>0){
+    dirToDIrac = RIGHT;
+  }
+  return dirac_orientation(std::abs(dirToDIrac- robot_orientation));
 }
 
 int main(int argc, char** argv)
@@ -270,14 +287,33 @@ int main(int argc, char** argv)
   // Create the ROS subscriber for the odometry topic
   ros::Subscriber odom_sub = nh.subscribe("/dirac_description/odom", 10, odomCallback);
 
- ros::Subscriber front_dist_sub = nh.subscribe("/front_distance", 10, frontDistanceCallback);
+  ros::Subscriber front_dist_sub = nh.subscribe("/front_distance", 10, frontDistanceCallback);
   ros::Subscriber left_dist_sub = nh.subscribe("/left_distance", 10, leftDistanceCallback);
   ros::Subscriber right_dist_sub = nh.subscribe("/right_distance", 10, rightDistanceCallback);
 
-  AStar newAStar();
-  
+  AStar theAStar;
+  Vector2 endPos(5.0,5.0);
   std::vector<Vector2> obstacles;
-  fillObstacles(&obstacles);
+  std::vector<Vector2> path;
+
+  while(getCurrentX()!=  static_cast<int>( endPos.getX()) && getCurrentY() !=  static_cast<int>( endPos.getY()) ){
+    fillObstacles(obstacles);
+    path = theAStar.getPath(currentPos,endPos, obstacles);
+    auto dir = path.front();
+    dirac_orientation turn = whichWayToTurn(dir);
+    if(turn==LEFT){
+      turn_left();
+    }
+    else if(turn==RIGHT){
+      turn_right();
+    }
+    else if(turn==BACKWARD){
+      turn_arround();
+    }
+    for(int i=0; i<dir.getX()+dir.getY();i++){
+      move_forward();
+    }
+  }
   
   
   // ReSharper disable once CppExpressionWithoutSideEffects
