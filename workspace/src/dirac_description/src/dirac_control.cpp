@@ -264,7 +264,7 @@ int main(int argc, char** argv)
   // Create the ROS subscriber for the odometry topic
   ros::Subscriber odom_sub = nh.subscribe("/dirac_description/odom", 10, odomCallback);
 
-ros::Duration(1.0).sleep();
+ros::Duration(5.0).sleep();
   move_forward();
   turn_left();
   move_forward();
