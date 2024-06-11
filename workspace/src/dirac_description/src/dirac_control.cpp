@@ -15,11 +15,6 @@ enum controlStage {
   IDLE,
 };
 
-
-
-
-
-
 Vector2 desiredPos{0,0};
 controlStage currentControlStage = IDLE;
 double lastTime = 0;
@@ -122,7 +117,7 @@ void pidControlCallback(const ros::TimerEvent& event)
         
         cmd_vel_pub.publish(cmd_vel_msg);
 
-        if (desiredPos.subtractNew(currentPos).length() < 0.3)
+        if ((desiredPos - currentPos).length() < 0.3)
         { 
           std::cout << "END OF DRIVING\n";
           std::cout << "Current pos: ( " << currentPos.getX() << " , " << currentPos.getY() << " )\n"; 
@@ -188,8 +183,8 @@ void move_forward() {
   while(currentControlStage != IDLE)ros::spinOnce(); 
   //idealisedPos = idealisedPos.addNew(orintation_vector[robot_orientation]);
   //desiredPos = idealisedPos.addNew(origin_offset);
-  desiredPos = currentPos.addNew(orintation_vector[robot_orientation]);
-  desiredPos = Vector2((float)(((int) desiredPos.getX()/1)+0.5), (float) ((int) desiredPos.getY()/1)+0.5);
+  desiredPos = currentPos + orintation_vector[robot_orientation];
+  desiredPos = Vector2(((static_cast<int>(desiredPos.getX())/1)+0.5), (static_cast<int>(desiredPos.getY())/1)+0.5); // NOLINT(*-integer-division)
   currentControlStage = DRIVING;
 }
 
