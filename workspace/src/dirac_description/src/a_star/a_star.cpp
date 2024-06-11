@@ -84,9 +84,27 @@ std::vector<Vector2> AStar::getPath(const Vector2 &start, const Vector2 &end, st
         current = current->getParent();
     }
 
+    std::vector<Vector2> motionPoints = pathToMotion(path);
+
     std::reverse(path.begin(), path.end());
 
     return path;
 }
 
+std::vector<Vector2> AStar::pathToMotion(std::vector<Vector2>& path) {
+    std::vector<Vector2> pathWaypoints;
+    int count = 1;
+    Vector2 direction = path[0] - path[1];
+    for (int i = 2; i < path.size(); i++) {
+        if (direction == path[i-1] - path[i]) {
+            count++;
+        } else {
+            pathWaypoints.emplace_back(direction * count);
+            count = 1;
+            direction = path[i-1] - (path[i]);
+        }
+    }
+    pathWaypoints.emplace_back(direction * count);
+    return pathWaypoints;
+}
 

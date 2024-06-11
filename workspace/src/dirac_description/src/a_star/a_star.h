@@ -26,7 +26,9 @@ private:
 
     Node* getNode(const Vector2& pos, Node* parent);
 
-    int getDistanceToPoint(const Node *a, const Vector2& b);
+    static int getDistanceToPoint(const Node *a, const Vector2& b);
+
+    static std::vector<Vector2> pathToMotion(std::vector<Vector2>& path);
 
 public:
     ~AStar();

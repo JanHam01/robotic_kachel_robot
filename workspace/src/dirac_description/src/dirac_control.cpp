@@ -65,7 +65,7 @@ void pidControlCallback(const ros::TimerEvent& event)
   }
   lastTime = time;
 
-  Vector2 currentToDesired = desiredPos.subtractNew(currentPos);
+  Vector2 currentToDesired = desiredPos - currentPos;
   double desiredHeading = currentToDesired.getAngle();
   double headingDiff = normalizeAngle(desiredHeading - currentHeading);
 
@@ -117,7 +117,7 @@ void pidControlCallback(const ros::TimerEvent& event)
         
         cmd_vel_pub.publish(cmd_vel_msg);
 
-        if (desiredPos.subtractNew(currentPos).length() < 0.1)
+        if ((desiredPos -currentPos).length() < 0.1)
         {
            currentControlStage = IDLE;
         }
@@ -178,7 +178,7 @@ Vector2 turn_vector[ ] = {Vector2(turning_val, 0.0),
 
 void move_forward() {
   while(currentControlStage != IDLE)ros::spinOnce(); 
-  desiredPos = currentPos.addNew(orintation_vector[robot_orientation]);
+  desiredPos = currentPos + orintation_vector[robot_orientation];
   currentControlStage = DRIVING;
 }
 
@@ -186,7 +186,7 @@ void turn_left() {
   while(currentControlStage != IDLE)ros::spinOnce();
   desiredPos = currentPos;
   robot_orientation = static_cast<dirac_orientation>((robot_orientation + 1) % 4);
-  desiredPos = currentPos.addNew(turn_vector[robot_orientation]);
+  desiredPos = currentPos + turn_vector[robot_orientation];
 
   currentControlStage = TURNING;
 }
@@ -195,7 +195,7 @@ void turn_right() {
   while(currentControlStage != IDLE)ros::spinOnce();
   desiredPos = currentPos;
   robot_orientation = static_cast<dirac_orientation>((robot_orientation - 1) % 4);
-  desiredPos = currentPos.addNew(turn_vector[robot_orientation]);
+  desiredPos = currentPos + turn_vector[robot_orientation];
   
   currentControlStage = TURNING;
 }
@@ -204,7 +204,7 @@ void turn_arround() {
   while(currentControlStage != IDLE)ros::spinOnce();
   desiredPos = currentPos;
   robot_orientation = static_cast<dirac_orientation>((robot_orientation + 2) % 4);
-  desiredPos = currentPos.addNew(turn_vector[robot_orientation]);
+  desiredPos = currentPos + turn_vector[robot_orientation];
 
   currentControlStage = TURNING;
 }

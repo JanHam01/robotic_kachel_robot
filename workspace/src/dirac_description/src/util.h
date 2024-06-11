@@ -27,23 +27,6 @@ public:
         return t;
     }
 
-    Vector2 addNew(const Vector2 o) const
-    {
-        Vector2 t(m_x, m_y);
-        t.m_x += o.m_x;
-        t.m_y += o.m_y;
-        return t;
-    }
-
-    Vector2 subtractNew(const Vector2 o) const
-    {
-
-        Vector2 t(m_x, m_y);
-        t.m_x -= o.m_x;
-        t.m_y -= o.m_y;
-        return t;
-    }
-
     double length() const
     {
         return std::sqrt(m_x * m_x + m_y * m_y);
@@ -57,6 +40,31 @@ public:
     double getAngle() const
     {
         return std::atan2(m_y, m_x);
+    }
+
+    Vector2 operator+(const Vector2& o) const
+    {
+        return Vector2(m_x + o.m_x, m_y + o.m_y);
+    }
+
+    Vector2 operator+(const double& o) const
+    {
+        return Vector2(m_x + o, m_y + o);
+    }
+
+    Vector2 operator-(const Vector2& o) const
+    {
+        return Vector2(m_x - o.m_x, m_y - o.m_y);
+    }
+
+    Vector2 operator-(const double& o) const
+    {
+        return Vector2(m_x - o, m_y - o);
+    }
+
+    Vector2 operator*(const double s) const
+    {
+        return Vector2(m_x * s, m_y * s);
     }
 
     friend bool operator==(const Vector2& s, const Vector2& o)
