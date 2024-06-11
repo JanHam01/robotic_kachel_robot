@@ -233,8 +233,8 @@ Vector2 getObsPlace(int mode){
     y = getCurrentY() + left_distance*(orintation_vector[(robot_orientation+3)%4].getY());
   }
   if(mode ==3){
-    x = getCurrentX() + left_distance*(orintation_vector[(robot_orientation+1)%4].getX());
-    y = getCurrentY() + left_distance*(orintation_vector[(robot_orientation+1)%4].getY());
+    x = getCurrentX() + right_distance*(orintation_vector[(robot_orientation+1)%4].getX());
+    y = getCurrentY() + right_distance*(orintation_vector[(robot_orientation+1)%4].getY());
   }
   return Vector2(x,y);
 	
@@ -242,13 +242,24 @@ Vector2 getObsPlace(int mode){
 
 void fillObstacles(std::vector<Vector2> &currentObs){
 	if(front_distance>0){
-		currentObs.push_back(getObsPlace(1));
+		auto obsPos =  getObsPlace(1);
+		if(std::find(currentObs.begin(), currentObs.end(), obsPos) != currentObs.end()) {
+  		   currentObs.push_back(obsPos);
+		} 
+		
+		
 	}
 	if(left_distance>0){
-    currentObs.push_back(getObsPlace(2));
+    		auto obsPos =  getObsPlace(2);
+		if(std::find(currentObs.begin(), currentObs.end(), obsPos) != currentObs.end()) {
+  		   currentObs.push_back(obsPos);
+		}
 	}
 	if(right_distance>0){
-    currentObs.push_back(getObsPlace(3));
+    		auto obsPos =  getObsPlace(3);
+		if(std::find(currentObs.begin(), currentObs.end(), obsPos) != currentObs.end()) {
+  		   currentObs.push_back(obsPos);
+		}
 	}
 }
 
@@ -268,6 +279,59 @@ dirac_orientation whichWayToTurn(Vector2 dir){
   }
   return dirac_orientation(std::abs(dirToDIrac- robot_orientation));
 }
+
+AStar theAStar;
+Vector2 endPos(5.0,5.0);
+std::vector<Vector2> obstacles;
+std::vector<Vector2> path;
+bool ready = false;
+
+void controlCallback(const ros::TimerEvent&) {
+   if(!ready){
+   	return;
+   }
+   if (getCurrentX() == static_cast<int>(endPos.getX()) && getCurrentY() == static_cast<int>(endPos.getY())) {
+        ROS_INFO("Goal reached!");
+        return;
+    }
+    fillObstacles(obstacles);
+    std::cout<<"obs"<<obstacles.size()<<std::endl;
+    std::cout<<"obs"<<obstacles.at(0).getX()<<obstacles.at(0).getY()<<std::endl;
+    std::cout<<"obs"<<obstacles.at(1).getX()<<obstacles.at(1).getY()<<std::endl;
+    std::cout<<"obs"<<obstacles.at(2).getX()<<obstacles.at(2).getY()<<std::endl;
+    path.clear();
+    std::cout<<path.size()<<std::endl;
+    path = theAStar.getPath(currentPos,endPos, obstacles);
+    std::cout<<path.size()<<std::endl;
+    
+    if (path.size() < 2) {
+        ROS_WARN("Path too short or invalid.");
+        return;
+    }
+    std::cout<<currentPos.getX()<<std::endl;
+    std::cout<<path.at(0).getX()<<path.at(0).getY()<<std::endl;
+    std::cout<<path.at(1).getX()<<path.at(1).getY()<<std::endl;
+    std::cout<<path.at(2).getX()<<path.at(2).getY()<<std::endl;
+    std::cout<<path.at(3).getX()<<path.at(3).getY()<<std::endl;
+    auto dir = path.at(1);
+    dirac_orientation turn = whichWayToTurn(dir);
+    std::cout<<"make"<<turn<<std::endl;
+    
+    if(turn==LEFT){
+      turn_left();
+    }
+    else if(turn==RIGHT){
+      turn_right();
+    }
+    else if(turn==BACKWARD){
+      turn_arround();
+    }
+    for(int i=0; i<dir.getX()+dir.getY();i++){
+      move_forward();
+    }
+    ros::spinOnce();
+}
+
 
 int main(int argc, char** argv)
 {
@@ -289,59 +353,17 @@ int main(int argc, char** argv)
 
   ros::Subscriber front_dist_sub = nh.subscribe("/front_distance", 10, frontDistanceCallback);
   ros::Subscriber left_dist_sub = nh.subscribe("/left_distance", 10, leftDistanceCallback);
-  ros::Subscriber right_dist_sub = nh.subscribe("/right_distance", 10, rightDistanceCallback);
-
-  AStar theAStar;
-  Vector2 endPos(5.0,5.0);
-  std::vector<Vector2> obstacles;
-  std::vector<Vector2> path;
-
-  while(getCurrentX()!=  static_cast<int>( endPos.getX()) && getCurrentY() !=  static_cast<int>( endPos.getY()) ){
-    fillObstacles(obstacles);
-    path = theAStar.getPath(currentPos,endPos, obstacles);
-    auto dir = path.front();
-    dirac_orientation turn = whichWayToTurn(dir);
-    if(turn==LEFT){
-      turn_left();
-    }
-    else if(turn==RIGHT){
-      turn_right();
-    }
-    else if(turn==BACKWARD){
-      turn_arround();
-    }
-    for(int i=0; i<dir.getX()+dir.getY();i++){
-      move_forward();
-    }
-  }
+  ros::Subscriber right_dist_sub = nh.subscribe("/right_distance", 10, rightDistanceCallback);  
   
-  
-  // ReSharper disable once CppExpressionWithoutSideEffects
-  ros::Duration(5.0).sleep();
-  move_forward();
-  turn_left();
-  move_forward();
-  move_forward();
-  turn_right();
-  move_forward();
-  move_forward();
-  move_forward();
-  move_forward();
-  turn_left();
-  move_forward(); 
-  move_forward(); 
-  move_forward(); 
-  move_forward(); 
-  move_forward(); 
-  move_forward(); 
-  turn_right();
-  move_forward(); 
-  move_forward(); 
-  move_forward(); 
-  turn_left();
-  move_forward();
-  turn_right();
-  move_forward();
+  ROS_INFO("Waiting for the first odometry message...");
+    nav_msgs::OdometryConstPtr init_msg = ros::topic::waitForMessage<nav_msgs::Odometry>("/dirac_description/odom");
+    if (init_msg != nullptr) {
+        ROS_INFO("Received first odometry message, starting control loop.");
+        ready = true;
+       
+    }
+    
+    ros::Timer control_timer = nh.createTimer(ros::Duration(10.0), controlCallback);
 
   // Start the ROS node main loop
   ros::spin();
