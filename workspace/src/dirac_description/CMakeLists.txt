@@ -26,4 +26,8 @@ target_link_libraries(lidar_listener ${catkin_LIBRARIES})
 add_dependencies(lidar_listener ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 
+add_executable(test_a_star src/a_star/test_a_star.cpp)
+target_link_libraries(test_a_star a_star)
+
+
 add_library(a_star src/a_star/a_star.cpp src/a_star/node.cpp src/a_star/heap/heap.cpp)

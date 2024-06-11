@@ -86,9 +86,9 @@ std::vector<Vector2> AStar::getPath(const Vector2 &start, const Vector2 &end, st
 
     std::vector<Vector2> motionPoints = pathToMotion(path);
 
-    std::reverse(path.begin(), path.end());
+    std::reverse(motionPoints.begin(), motionPoints.end());
 
-    return path;
+    return motionPoints;
 }
 
 std::vector<Vector2> AStar::pathToMotion(std::vector<Vector2>& path) {

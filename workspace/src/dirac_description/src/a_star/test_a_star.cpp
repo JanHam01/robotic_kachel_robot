@@ -17,3 +17,8 @@ void testAStar() {
         std::cout << "Path: " << p.getX() << " " << p.getY() << "\n";
     }
 }
+
+int main() {
+    testAStar();
+    return 0;
+}
