@@ -243,7 +243,7 @@ Vector2 getObsPlace(int mode){
 void fillObstacles(std::vector<Vector2> &currentObs){
 	if(front_distance>0){
 		auto obsPos =  getObsPlace(1);
-		if(std::find(currentObs.begin(), currentObs.end(), obsPos) != currentObs.end()) {
+		if(std::find(currentObs.begin(), currentObs.end(), obsPos) == currentObs.end()) {
   		   currentObs.push_back(obsPos);
 		} 
 		
@@ -251,13 +251,13 @@ void fillObstacles(std::vector<Vector2> &currentObs){
 	}
 	if(left_distance>0){
     		auto obsPos =  getObsPlace(2);
-		if(std::find(currentObs.begin(), currentObs.end(), obsPos) != currentObs.end()) {
+		if(std::find(currentObs.begin(), currentObs.end(), obsPos) == currentObs.end()) {
   		   currentObs.push_back(obsPos);
 		}
 	}
 	if(right_distance>0){
     		auto obsPos =  getObsPlace(3);
-		if(std::find(currentObs.begin(), currentObs.end(), obsPos) != currentObs.end()) {
+		if(std::find(currentObs.begin(), currentObs.end(), obsPos) == currentObs.end()) {
   		   currentObs.push_back(obsPos);
 		}
 	}
@@ -295,25 +295,23 @@ void controlCallback(const ros::TimerEvent&) {
         return;
     }
     fillObstacles(obstacles);
-    std::cout<<"obs"<<obstacles.size()<<std::endl;
-    std::cout<<"obs"<<obstacles.at(0).getX()<<obstacles.at(0).getY()<<std::endl;
-    std::cout<<"obs"<<obstacles.at(1).getX()<<obstacles.at(1).getY()<<std::endl;
-    std::cout<<"obs"<<obstacles.at(2).getX()<<obstacles.at(2).getY()<<std::endl;
+    
     path.clear();
-    std::cout<<path.size()<<std::endl;
     path = theAStar.getPath(currentPos,endPos, obstacles);
-    std::cout<<path.size()<<std::endl;
     
     if (path.size() < 2) {
         ROS_WARN("Path too short or invalid.");
         return;
     }
+    
     std::cout<<currentPos.getX()<<std::endl;
     std::cout<<path.at(0).getX()<<path.at(0).getY()<<std::endl;
+    
     std::cout<<path.at(1).getX()<<path.at(1).getY()<<std::endl;
     std::cout<<path.at(2).getX()<<path.at(2).getY()<<std::endl;
     std::cout<<path.at(3).getX()<<path.at(3).getY()<<std::endl;
-    auto dir = path.at(1);
+    
+    auto dir = path.front();
     dirac_orientation turn = whichWayToTurn(dir);
     std::cout<<"make"<<turn<<std::endl;
     
