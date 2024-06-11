@@ -27,6 +27,23 @@ public:
         return t;
     }
 
+    Vector2 addNew(Vector2 o)
+    {
+      Vector2 t(m_x, m_y);
+      t.m_x += o.m_x;
+      t.m_y += o.m_y;
+      return t;
+    }
+
+    Vector2 subtractNew(Vector2 o)
+    {
+
+      Vector2 t(m_x, m_y);
+      t.m_x -= o.m_x;
+      t.m_y -= o.m_y;
+      return t;
+    }
+
     double length() const
     {
         return std::sqrt(m_x * m_x + m_y * m_y);
