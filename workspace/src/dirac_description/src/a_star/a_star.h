@@ -13,30 +13,30 @@
 
 class AStar {
 private:
-    std::vector<Node*> allNodes;
-    Heap openList;
-    std::unordered_set<Node*> closedList;
+  std::vector<Node *> allNodes;
+  Heap openList;
+  std::unordered_set<Node *> closedList;
 
-    Vector2 directions[4] = {
-        Vector2(1, 0),
-        Vector2(0, 1),
-        Vector2(-1, 0),
-        Vector2(0, -1)
-    };
+  Vector2 directions[4] = {
+    Vector2(1, 0),
+    Vector2(0, 1),
+    Vector2(-1, 0),
+    Vector2(0, -1)
+  };
 
-    Node* getNode(const Vector2& pos, Node* parent);
+  Node *getNode(const Vector2 &pos, Node *parent);
 
-    static int getDistanceToPoint(const Node *a, const Vector2& b);
-
-    static std::vector<Vector2> pathToMotion(std::vector<Vector2>& path);
+  static int getDistanceToPoint(const Node *a, const Vector2 &b);
 
 public:
-    ~AStar();
+  ~AStar();
 
-    void clearAllNodes();
+  void clearAllNodes();
 
-    std::vector<Vector2> getPath(const Vector2& start, const Vector2& end, std::vector<Vector2>& obstacles, bool motion = true);
+  std::vector<Vector2> getPath(const Vector2 &start, const Vector2 &end, std::vector<Vector2> &obstacles,
+                               bool motion = true);
 
+  static std::vector<Vector2> pathToMotion(std::vector<Vector2> &path);
 };
 
 #endif //A_STAR_H

@@ -40,36 +40,32 @@ make 0 */
 AStar aStar;
 
 void testAStar() {
-    std::vector<Vector2> obstacles;
-    obstacles.emplace_back(2,0);
-    obstacles.emplace_back(0,2);
-    obstacles.emplace_back(0,-1);
+  std::vector<Vector2> obstacles;
+  obstacles.emplace_back(2, 0);
+  obstacles.emplace_back(0, 2);
+  obstacles.emplace_back(0, -1);
 
 
-    for (Vector2 p : aStar.getPath(Vector2(0, 0), Vector2(5,5), obstacles, true))
-    {
-        std::cout << "Path: " << p.getX() << " " << p.getY() << "\n";
-    }
+  for (Vector2 p: aStar.getPath(Vector2(0, 0), Vector2(5, 5), obstacles, true)) {
+    std::cout << "Path: " << p.getX() << " " << p.getY() << "\n";
+  }
 }
-
 
 
 void testAStar2() {
-    std::vector<Vector2> obstacles;
-    obstacles.emplace_back(2,0);
-    obstacles.emplace_back(0,2);
-    obstacles.emplace_back(0,-1);
+  std::vector<Vector2> obstacles;
+  obstacles.emplace_back(2, 0);
+  obstacles.emplace_back(0, 2);
+  obstacles.emplace_back(0, -1);
 
 
-
-    for (Vector2 p : aStar.getPath(Vector2(1, 0), Vector2(5,5), obstacles, true))
-    {
-        std::cout << "Path: " << p.getX() << " " << p.getY() << "\n";
-    }
+  for (Vector2 p: aStar.getPath(Vector2(1, 0), Vector2(5, 5), obstacles, true)) {
+    std::cout << "Path: " << p.getX() << " " << p.getY() << "\n";
+  }
 }
 
 int main() {
-    testAStar();
-    testAStar2();
-    return 0;
+  testAStar();
+  testAStar2();
+  return 0;
 }
