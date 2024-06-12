@@ -28,6 +28,8 @@ Node* AStar::getNode(const Vector2 &pos, Node* parent) {
 int AStar::getDistanceToPoint(const Node *a, const Vector2& b) {
     int dx = std::abs(a->getX() - b.getX());
     int dy = std::abs(a->getY() - b.getY());
+    // dx < dy: priotize straight movement
+    // dx > dy: priotize diagonal movement
     if (dx < dy) {
         return 14 * dy + 10 * (dx - dy);
     }
@@ -49,6 +51,7 @@ std::vector<Vector2> AStar::getPath(const Vector2 &start, const Vector2 &end, st
         for (Vector2& direction : directions) {
             auto neighbourPos = Vector2(current->getX() + direction.getX(), current->getY() + direction.getY());
             if (neighbourPos.getX() == end.getX() && neighbourPos.getY() == end.getY()) {
+                current = getNode(neighbourPos, current);
                 goto PathFound;
             }
 
