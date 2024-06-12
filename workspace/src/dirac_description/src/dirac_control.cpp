@@ -124,9 +124,9 @@ void pidControlCallback(const ros::TimerEvent &event) {
 
       cmd_vel_pub.publish(cmd_vel_msg);
 
-      if (((desiredPos - currentPos).getX() < 0.1 && (robot_orientation == FORWARD || robot_orientation == BACKWARD))
+      if ((std::abs((desiredPos - currentPos).getX()) < 0.1 && (robot_orientation == FORWARD || robot_orientation == BACKWARD))
           ||
-          ((desiredPos - currentPos).getY() < 0.1) && (robot_orientation == LEFT || robot_orientation == RIGHT)) {
+          (std::abs((desiredPos - currentPos).getY()) < 0.1) && (robot_orientation == LEFT || robot_orientation == RIGHT)) {
         std::cout << "END OF DRIVING\n";
         std::cout << "Current pos: ( " << currentPos.getX() << " , " << currentPos.getY() << " )\n";
         std::cout << "Desired pos: ( " << desiredPos.getX() << " , " << desiredPos.getY() << " )\n\n";
