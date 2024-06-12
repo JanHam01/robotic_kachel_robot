@@ -309,6 +309,11 @@ void controlCallback(const ros::TimerEvent &) {
   path.clear();
   path = theAStar.getPath(currentPos, endPos, obstacles);
 
+  if (path.empty()) {
+    ROS_ERROR("No path found!");
+    return;
+  }
+
   std::cout << currentPos.getX() << std::endl;
   for (auto &p: path)
     std::cout << "Path " << p.getX() << " " << p.getY() << std::endl;

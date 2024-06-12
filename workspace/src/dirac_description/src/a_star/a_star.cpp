@@ -39,6 +39,10 @@ int AStar::getDistanceToPoint(const Node *a, const Vector2 &b) {
 
 std::vector<Vector2> AStar::getPath(const Vector2 &start, const Vector2 &end, std::vector<Vector2> &obstacles,
                                     bool motion) {
+  if (std::find(obstacles.begin(), obstacles.end(), end) != obstacles.end()) {
+    return {};
+  }
+
   openList.add(getNode(start, nullptr));
   Node *current;
   while (!openList.isEmpty()) {
