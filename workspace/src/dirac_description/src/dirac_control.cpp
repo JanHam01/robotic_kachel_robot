@@ -263,11 +263,11 @@ dirac_orientation whichWayToTurn(Vector2 dir) {
   } else if (dir.getX() < 0 && dir.getY() == 0) {
     dirToDIrac = BACKWARD;
   } else if (dir.getX() == 0 && dir.getY() < 0) {
-    dirToDIrac = LEFT;
-  } else if (dir.getX() == 0 && dir.getY() > 0) {
     dirToDIrac = RIGHT;
+  } else if (dir.getX() == 0 && dir.getY() > 0) {
+    dirToDIrac = LEFT;
   }
-  return static_cast<dirac_orientation>((dirToDIrac - robot_orientation) % 4);
+  return static_cast<dirac_orientation>(std::abs(dirToDIrac - robot_orientation) % 4);
 }
 
 AStar theAStar;
@@ -348,7 +348,7 @@ int main(int argc, char **argv) {
     ready = true;
   }
 
-  ros::Timer control_timer = nh.createTimer(ros::Duration(10.0), controlCallback);
+  ros::Timer control_timer = nh.createTimer(ros::Duration(5.0), controlCallback);
 
   // Start the ROS node main loop
   ros::spin();
