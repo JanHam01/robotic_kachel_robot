@@ -276,7 +276,7 @@ dirac_orientation whichWayToTurn(Vector2 dir) {
 }
 
 AStar theAStar;
-Vector2 endPos(5.0, 5.0);
+Vector2 endPos(0.0, 0.0);
 std::vector<Vector2> obstacles;
 std::vector<Vector2> path;
 bool ready = false;
@@ -285,7 +285,7 @@ void controlCallback(const ros::TimerEvent &) {
   if (!ready) {
     return;
   }
-  
+  ready = false;
   if (getCurrentX() == static_cast<int>(endPos.getX()) && getCurrentY() == static_cast<int>(endPos.getY())) {
     ROS_INFO("Goal reached!");
     return;
@@ -320,10 +320,10 @@ void controlCallback(const ros::TimerEvent &) {
   } else if (turn == BACKWARD) {
     turn_arround();
   }
-  for (int i = 0; i < dir.getX() + dir.getY(); i++) {
+  for (int i = 0; i < std::abs(dir.getX() + dir.getY()); i++) {
     move_forward();
   }
-  
+  ready=true;
   ros::spinOnce();
   
 }
@@ -350,6 +350,19 @@ int main(int argc, char **argv) {
   ros::Subscriber left_dist_sub = nh.subscribe("/left_distance", 10, leftDistanceCallback);
   ros::Subscriber right_dist_sub = nh.subscribe("/right_distance", 10, rightDistanceCallback);
 
+  ros::NodeHandle private_nh("~");
+
+  double end_x, end_y;
+  if (private_nh.getParam("end_x", end_x) && private_nh.getParam("end_y", end_y)) {
+    endPos = Vector2(end_x, end_y);
+    ROS_INFO("End position set to: x=%f, y=%f", end_x, end_y);
+  } else {
+    ROS_ERROR("Failed to get end position parameters. Using default values.");
+    endPos = Vector2(0.0, 0.0);
+  }
+
+  ROS_INFO("End position set to: x=%f, y=%f", end_x, end_y);
+
   ROS_INFO("Waiting for the first odometry message...");
   nav_msgs::OdometryConstPtr init_msg = ros::topic::waitForMessage<nav_msgs::Odometry>("/dirac_description/odom");
   if (init_msg != nullptr) {
@@ -357,7 +370,7 @@ int main(int argc, char **argv) {
     ready = true;
   }
 
-  ros::Timer control_timer = nh.createTimer(ros::Duration(10.0), controlCallback);
+  ros::Timer control_timer = nh.createTimer(ros::Duration(1.0), controlCallback);
 
   // Start the ROS node main loop
   ros::spin();

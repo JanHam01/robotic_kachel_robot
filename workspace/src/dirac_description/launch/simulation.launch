@@ -7,11 +7,16 @@
     <arg name="yaw" default="0"/>
     <arg name="robot_name" default="dirac"/>
     <arg name="urdf_file" default="$(find dirac_description)/urdf/dirac.urdf" />
+    <arg name="end_x" default="0.0" />
+    <arg name="end_y" default="0.0" />
     
 
     <param name="dirac_description" command="$(find xacro)/xacro  --inorder $(arg urdf_file)" />
     
-    <node name="dirac_control" pkg="dirac_description" type="dirac_control" output="screen" />
+    <node name="dirac_control" pkg="dirac_description" type="dirac_control" output="screen" >
+    	<param name="end_x" value="$(arg end_x)" />
+        <param name="end_y" value="$(arg end_y)" />
+    </node>
     
     <node name="lidar_listener" pkg="dirac_description" type="lidar_listener" output="screen" />
 
