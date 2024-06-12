@@ -9,6 +9,10 @@
 #include "util.h"
 #include "a_star/a_star.h"
 
+#define DEBUG 0
+#define DEBUG_TARGET_X 3
+#define DEBUG_TARGET_Y 0
+
 enum controlStage {
   TURNING,
   DRIVING,
@@ -25,7 +29,7 @@ enum dirac_orientation {
 dirac_orientation robot_orientation = FORWARD;
 
 Vector2 desiredPos{0, 0};
-controlStage currentControlStage = IDLE;
+volatile controlStage currentControlStage = IDLE;
 double lastTime = 0;
 
 // Velocity limits
@@ -121,7 +125,7 @@ void pidControlCallback(const ros::TimerEvent &event) {
       cmd_vel_pub.publish(cmd_vel_msg);
 
       if (((desiredPos - currentPos).getX() < 0.1 && (robot_orientation == FORWARD || robot_orientation == BACKWARD))
-          || 
+          ||
           ((desiredPos - currentPos).getY() < 0.1) && (robot_orientation == LEFT || robot_orientation == RIGHT)) {
         std::cout << "END OF DRIVING\n";
         std::cout << "Current pos: ( " << currentPos.getX() << " , " << currentPos.getY() << " )\n";
@@ -166,7 +170,7 @@ Vector2 orintation_vector[] = {
   Vector2(0.0, -1.0)
 };
 
-constexpr float turning_val = FLT_MAX/2;
+constexpr float turning_val = FLT_MAX / 2;
 Vector2 turn_vector[] = {
   Vector2(turning_val, 0.0),
   Vector2(0.0, turning_val),
@@ -282,7 +286,7 @@ std::vector<Vector2> path;
 bool ready = false;
 
 void controlCallback(const ros::TimerEvent &) {
-  if (!ready) {
+  if (!ready || currentControlStage != IDLE) {
     return;
   }
   ready = false;
@@ -290,7 +294,8 @@ void controlCallback(const ros::TimerEvent &) {
     ROS_INFO("Goal reached!");
     return;
   }
-  std::cout<<getCurrentX()<<":"<<static_cast<int>(endPos.getX())<<" "<<getCurrentY()<<":"<<static_cast<int>(endPos.getY())<<std::endl;
+  std::cout << getCurrentX() << ":" << static_cast<int>(endPos.getX()) << " " << getCurrentY() << ":" << static_cast<
+    int>(endPos.getY()) << std::endl;
   fillObstacles(obstacles);
 
   for (auto car: obstacles) {
@@ -323,9 +328,8 @@ void controlCallback(const ros::TimerEvent &) {
   for (int i = 0; i < std::abs(dir.getX() + dir.getY()); i++) {
     move_forward();
   }
-  ready=true;
+  ready = true;
   ros::spinOnce();
-  
 }
 
 
@@ -353,7 +357,12 @@ int main(int argc, char **argv) {
   ros::NodeHandle private_nh("~");
 
   double end_x, end_y;
-  if (private_nh.getParam("end_x", end_x) && private_nh.getParam("end_y", end_y)) {
+  if (DEBUG) {
+    ROS_WARN("DIRAC DEBUG MODE ENABLED");
+    end_x = DEBUG_TARGET_X;
+    end_y = DEBUG_TARGET_Y;
+    endPos = {end_x, end_y};
+  } else if (private_nh.getParam("end_x", end_x) && private_nh.getParam("end_y", end_y)) {
     endPos = Vector2(end_x, end_y);
     ROS_INFO("End position set to: x=%f, y=%f", end_x, end_y);
   } else {
