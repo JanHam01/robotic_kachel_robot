@@ -276,7 +276,7 @@ dirac_orientation whichWayToTurn(Vector2 dir) {
   } else if (dir.getX() == 0 && dir.getY() > 0) {
     dirToDIrac = LEFT;
   }
-  return static_cast<dirac_orientation>(std::abs(dirToDIrac - robot_orientation) % 4);
+  return static_cast<dirac_orientation>(std::abs(dirToDIrac + robot_orientation) % 4);
 }
 
 AStar theAStar;
