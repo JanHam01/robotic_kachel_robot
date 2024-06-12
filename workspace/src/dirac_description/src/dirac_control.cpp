@@ -15,6 +15,15 @@ enum controlStage {
   IDLE,
 };
 
+enum dirac_orientation {
+  FORWARD = 0,
+  RIGHT = 1,
+  BACKWARD = 2,
+  LEFT = 3,
+};
+
+dirac_orientation robot_orientation = FORWARD;
+
 Vector2 desiredPos{0, 0};
 controlStage currentControlStage = IDLE;
 double lastTime = 0;
@@ -111,7 +120,9 @@ void pidControlCallback(const ros::TimerEvent &event) {
 
       cmd_vel_pub.publish(cmd_vel_msg);
 
-      if ((desiredPos - currentPos).length() < 0.3) {
+      if (((desiredPos - currentPos).getX() < 0.1 && (robot_orientation == FORWARD || robot_orientation == BACKWARD))
+          || 
+          ((desiredPos - currentPos).getY() < 0.1) && (robot_orientation == LEFT || robot_orientation == RIGHT)) {
         std::cout << "END OF DRIVING\n";
         std::cout << "Current pos: ( " << currentPos.getX() << " , " << currentPos.getY() << " )\n";
         std::cout << "Desired pos: ( " << desiredPos.getX() << " , " << desiredPos.getY() << " )\n\n";
@@ -148,15 +159,6 @@ void rightDistanceCallback(const std_msgs::Int32::ConstPtr &msg) {
   right_distance = msg->data;
 }
 
-enum dirac_orientation {
-  FORWARD = 0,
-  RIGHT = 1,
-  BACKWARD = 2,
-  LEFT = 3,
-};
-
-dirac_orientation robot_orientation = FORWARD;
-
 Vector2 orintation_vector[] = {
   Vector2(1.0, 0.0),
   Vector2(0.0, 1.0),
@@ -164,7 +166,7 @@ Vector2 orintation_vector[] = {
   Vector2(0.0, -1.0)
 };
 
-constexpr float turning_val = 9999999.0;
+constexpr float turning_val = FLT_MAX/2;
 Vector2 turn_vector[] = {
   Vector2(turning_val, 0.0),
   Vector2(0.0, turning_val),
@@ -180,6 +182,9 @@ void move_forward() {
   desiredPos = Vector2(((static_cast<int>(desiredPos.getX()) / 1) + 0.5), // NOLINT(*-integer-division)
                        (static_cast<int>(desiredPos.getY()) / 1) + 0.5); // NOLINT(*-integer-division)
   currentControlStage = DRIVING;
+  while (currentControlStage != IDLE)ros::spinOnce();
+  desiredPos = currentPos + turn_vector[robot_orientation];
+  currentControlStage = TURNING;
 }
 
 void turn_left() {
