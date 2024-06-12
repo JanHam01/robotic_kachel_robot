@@ -166,7 +166,7 @@ void rightDistanceCallback(const std_msgs::Int32::ConstPtr &msg) {
 Vector2 orintation_vector[] = {
   Vector2(1.0, 0.0),
   Vector2(0.0, 1.0),
-  Vector2(-1.0, 0),
+  Vector2(-1.0, 0.0),
   Vector2(0.0, -1.0)
 };
 
@@ -174,7 +174,7 @@ constexpr float turning_val = FLT_MAX / 2;
 Vector2 turn_vector[] = {
   Vector2(turning_val, 0.0),
   Vector2(0.0, turning_val),
-  Vector2(-turning_val, 0),
+  Vector2(-turning_val, 0.0),
   Vector2(0.0, -turning_val)
 };
 
@@ -203,7 +203,7 @@ void turn_left() {
 void turn_right() {
   while (currentControlStage != IDLE)ros::spinOnce();
   desiredPos = currentPos;
-  robot_orientation = static_cast<dirac_orientation>((robot_orientation - 1) % 4);
+  robot_orientation = static_cast<dirac_orientation>((robot_orientation + 3) % 4);
   desiredPos = currentPos + turn_vector[robot_orientation];
 
   currentControlStage = TURNING;
@@ -331,6 +331,7 @@ void controlCallback(const ros::TimerEvent &) {
     turn_arround();
   }
   for (int i = 0; i < std::abs(dir.getX() + dir.getY()); i++) {
+  std::cout<<std::abs(dir.getX() + dir.getY())<<std::endl;
     move_forward();
   }
   ready = true;
@@ -374,8 +375,6 @@ int main(int argc, char **argv) {
     ROS_ERROR("Failed to get end position parameters. Using default values.");
     endPos = Vector2(0.0, 0.0);
   }
-
-  ROS_INFO("End position set to: x=%f, y=%f", end_x, end_y);
 
   ROS_INFO("Waiting for the first odometry message...");
   nav_msgs::OdometryConstPtr init_msg = ros::topic::waitForMessage<nav_msgs::Odometry>("/dirac_description/odom");
