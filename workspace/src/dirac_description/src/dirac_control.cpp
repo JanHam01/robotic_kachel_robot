@@ -215,11 +215,11 @@ void turn_arround() {
 }
 
 int getCurrentX() {
-  return static_cast<int>(std::round(currentPos.getX()));
+  return static_cast<int>(std::floor(currentPos.getX()));
 }
 
 int getCurrentY() {
-  return static_cast<int>(std::round(currentPos.getY()));
+  return static_cast<int>(std::floor(currentPos.getY()));
 }
 
 Vector2 getObsPlace(int mode) {
@@ -285,10 +285,12 @@ void controlCallback(const ros::TimerEvent &) {
   if (!ready) {
     return;
   }
+  
   if (getCurrentX() == static_cast<int>(endPos.getX()) && getCurrentY() == static_cast<int>(endPos.getY())) {
     ROS_INFO("Goal reached!");
     return;
   }
+  std::cout<<getCurrentX()<<":"<<static_cast<int>(endPos.getX())<<" "<<getCurrentY()<<":"<<static_cast<int>(endPos.getY())<<std::endl;
   fillObstacles(obstacles);
 
   for (auto car: obstacles) {
@@ -321,7 +323,9 @@ void controlCallback(const ros::TimerEvent &) {
   for (int i = 0; i < dir.getX() + dir.getY(); i++) {
     move_forward();
   }
+  
   ros::spinOnce();
+  
 }
 
 
@@ -353,7 +357,7 @@ int main(int argc, char **argv) {
     ready = true;
   }
 
-  ros::Timer control_timer = nh.createTimer(ros::Duration(5.0), controlCallback);
+  ros::Timer control_timer = nh.createTimer(ros::Duration(10.0), controlCallback);
 
   // Start the ROS node main loop
   ros::spin();
