@@ -298,7 +298,12 @@ void controlCallback(const ros::TimerEvent &) {
   std::cout << "End pos: ( " << endPos.getX() << " , " << endPos.getY() << " )\n";
 
   path.clear();
+  auto start = std::chrono::high_resolution_clock::now();
   path = theAStar.getPath(currentPos, endPos, obstacles);
+  auto stop = std::chrono::high_resolution_clock::now();
+  auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+
+  ROS_INFO("A* took %ld microseconds", duration.count());
 
   if (path.empty()) {
     ROS_ERROR("No path found!");

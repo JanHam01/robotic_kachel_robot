@@ -8,19 +8,19 @@ AStar::~AStar() {
 }
 
 void AStar::clearAllNodes() {
-  for (Node *node: allNodes) {
+  for (const auto *node: allNodes) {
     delete node;
   }
   allNodes.clear();
 }
 
-Node *AStar::getNode(const Vector2 &pos, Node *parent) {
+Node *AStar::getNode(const Vector2 &pos, Node *parent=nullptr) {
   for (Node *node: allNodes) {
     if (node->getX() == pos.getX() && node->getY() == pos.getY()) {
       return node;
     }
   }
-  auto node = new Node(pos, parent);
+  const auto node = new Node(pos, parent);
   allNodes.push_back(node);
   return node;
 }
@@ -38,7 +38,8 @@ int AStar::getDistanceToPoint(const Node *a, const Vector2 &b) {
 
 
 std::vector<Vector2> AStar::getPath(const Vector2 &start, const Vector2 &end, std::vector<Vector2> &obstacles,
-                                    bool motion) {
+                                    const bool motion) {
+  std::vector<Vector2> path;
   if (std::find(obstacles.begin(), obstacles.end(), end) != obstacles.end()) {
     return {};
   }
@@ -60,7 +61,7 @@ std::vector<Vector2> AStar::getPath(const Vector2 &start, const Vector2 &end, st
         continue;
       }
 
-      auto neighbour = getNode(neighbourPos, current);
+      auto neighbour = getNode(neighbourPos);
 
 
       if (closedList.find(neighbour) != closedList.end()) {
@@ -85,9 +86,10 @@ std::vector<Vector2> AStar::getPath(const Vector2 &start, const Vector2 &end, st
     }
   }
 
+  goto ReturnPath;
+
 PathFound:
 
-  std::vector<Vector2> path;
   while (current != nullptr) {
     path.emplace_back(current->getX(), current->getY());
     current = current->getParent();
@@ -96,6 +98,8 @@ PathFound:
     path = pathToMotion(path);
 
   std::reverse(path.begin(), path.end());
+
+ReturnPath:
 
   openList.clear();
   closedList.clear();

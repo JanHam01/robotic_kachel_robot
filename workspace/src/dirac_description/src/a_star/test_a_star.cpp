@@ -46,7 +46,7 @@ void testAStar() {
   obstacles.emplace_back(0, -1);
 
 
-  for (Vector2 p: aStar.getPath(Vector2(0, 0), Vector2(5, 5), obstacles, true)) {
+  for (Vector2 p: aStar.getPath(Vector2(0, 0), Vector2(10, 10), obstacles, true)) {
     std::cout << "Path: " << p.getX() << " " << p.getY() << "\n";
   }
 }
@@ -57,15 +57,34 @@ void testAStar2() {
   obstacles.emplace_back(2, 0);
   obstacles.emplace_back(0, 2);
   obstacles.emplace_back(0, -1);
+  obstacles.emplace_back(1, 5);
+  obstacles.emplace_back(1, -1);
+  obstacles.emplace_back(-1, 1);
+  obstacles.emplace_back(5, 1);
+  obstacles.emplace_back(4, 6);
+  obstacles.emplace_back(4, -1);
+  obstacles.emplace_back(10, 2);
+  obstacles.emplace_back(9, 8);
+  obstacles.emplace_back(9, 1);
+  obstacles.emplace_back(8, 3);
+  obstacles.emplace_back(10, 3);
+  obstacles.emplace_back(-1, 4);
+  obstacles.emplace_back(10, 4);
+  obstacles.emplace_back(10, 5);
+  obstacles.emplace_back(7, 6);
+  obstacles.emplace_back(10, 6);
+  obstacles.emplace_back(6, 7);
+  obstacles.emplace_back(10, 7);
 
 
-  for (Vector2 p: aStar.getPath(Vector2(1, 0), Vector2(5, 5), obstacles, true)) {
+
+  for (Vector2 p: aStar.getPath(Vector2(9, 6), Vector2(10, 10), obstacles, true)) {
     std::cout << "Path: " << p.getX() << " " << p.getY() << "\n";
   }
 }
 
 int main() {
-  testAStar();
+  printf("\n");
   testAStar2();
   return 0;
 }
