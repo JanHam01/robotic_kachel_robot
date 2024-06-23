@@ -14,7 +14,7 @@ Während DIRAC fährt, lässt sich im Terminal verfolgen, ob er sein Ziel bereit
 Nach dem Clonen des Package sind folgende Eingaben nötig (in Ordner "workspace"):  
 - source ./devel/setup.bash
 - roslaunch dirac_descrpition simulation.launch x_pos:=*hier Koordinaten für x*  y_pos:=*hier Koordinaten für y*  
-Die Koordinaten für die x- und y- Position können frei gewählt werden, zB x_pos:=6.0, y_pos:=1.0.  
+Die Koordinaten für die x- und y- Position können frei gewählt werden, zB x_pos:=6.0, y_pos:=1.0. Ist die Eingabe negativ oder zu groß (zB 12.0 oder -5.0) wird DIRAC festellen, dass er dieses Ziel nicht erreichen kann.  
 Der Befehl startet dann die Simulation in gazebo und DIRAC macht sich auf dem schnellsten Weg auf zu seinem Ziel.
 
 # Code-Umsetzung
