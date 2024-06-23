@@ -26,8 +26,10 @@ enum dirac_orientation {
   LEFT = 3,
 };
 
+// Variable for robot grid oriantation
 dirac_orientation robot_orientation = FORWARD;
 
+// PID variables 
 Vector2 desiredPos{0, 0};
 volatile controlStage currentControlStage = IDLE;
 double lastTime = 0;
@@ -48,15 +50,11 @@ double prevError = 0.0;
 // ROS publisher for cmd_vel topic
 ros::Publisher cmd_vel_pub;
 
-// Current heading variable
-Vector2 currentPos{0.499997, 0.500002}; //TODO Current pos: ( 0.499997 , 0.500002 )
-//Vector2 origin_offset{0.499997,0.500002};
-//Vector2 idealisedPos{0.0, 0.0};
+// Current position and heading variable
+Vector2 currentPos{0.499997, 0.500002}; 
 double currentHeading = 0.0;
 
-double stateChangeTimer = 0;
-
-
+// Variables for Lidar sensor callback
 int front_distance = 0;
 int left_distance = 0;
 int right_distance = 0;
@@ -85,12 +83,9 @@ void pidControlCallback(const ros::TimerEvent &event) {
       cmd_vel_msg.angular.z = angular_vel;
       cmd_vel_pub.publish(cmd_vel_msg);
 
-      //std::cout << "TURNING - d: " << desiredHeading << " c: " << currentHeading << " diff: " << headingDiff << "\n";
       if (std::abs(desiredHeading - currentHeading) < 0.05) {
-        std::cout << "END OF TURNING\n";
-        std::cout << "Current pos: ( " << currentPos.getX() << " , " << currentPos.getY() << " )\n";
-        std::cout << "Desired pos: ( " << desiredPos.getX() << " , " << desiredPos.getY() << " )\n\n";
         currentControlStage = IDLE;
+        std::cout << "END OF TURNING\n";
       }
     }
     break;
@@ -111,26 +106,16 @@ void pidControlCallback(const ros::TimerEvent &event) {
 
       cmd_vel_msg.linear.x = pidOutput;
 
-      //std::cout << "Current pos: ( " << currentPos.getX() << " , " << currentPos.getY() << " )\n";
-      //std::cout << "Desired pos: ( " << desiredPos.getX() << " , " << desiredPos.getY() << " )\n";
-      //std::cout << "DRIVING - d: " << desiredHeading << " c: " << currentHeading << " diff: " << headingDiff << "\n";
-      //std::cout << "DRIVING - d: " << prevError << " PID out: " << pidOutput << "\n";
-      /*if (headingDiff > 0.5)
-      {
-        errorIntegral = 0.0;
-        prevError = 0.0;
-        currentControlStage = TURNING;
-      } */
-
       cmd_vel_pub.publish(cmd_vel_msg);
 
       if ((std::abs((desiredPos - currentPos).getX()) < 0.1 && (robot_orientation == FORWARD || robot_orientation == BACKWARD))
           ||
           (std::abs((desiredPos - currentPos).getY()) < 0.1) && (robot_orientation == LEFT || robot_orientation == RIGHT)) {
-        std::cout << "END OF DRIVING\n";
-        std::cout << "Current pos: ( " << currentPos.getX() << " , " << currentPos.getY() << " )\n";
-        std::cout << "Desired pos: ( " << desiredPos.getX() << " , " << desiredPos.getY() << " )\n\n";
-        currentControlStage = IDLE;
+              cmd_vel_msg.linear.x = 0;
+              cmd_vel_msg.angular.z = 0;
+              cmd_vel_pub.publish(cmd_vel_msg);
+              currentControlStage = IDLE;
+              std::cout << "END OF DRIVING\n";
       }
     }
     break;
@@ -151,18 +136,21 @@ void odomCallback(const nav_msgs::Odometry::ConstPtr &msg) {
   currentHeading = tf::getYaw(msg->pose.pose.orientation);
 }
 
+// Callback function for Lidar sensor
 void frontDistanceCallback(const std_msgs::Int32::ConstPtr &msg) {
   front_distance = msg->data;
 }
 
+// Callback function for Lidar sensor
 void leftDistanceCallback(const std_msgs::Int32::ConstPtr &msg) {
   left_distance = msg->data;
 }
-
+// Callback function for Lidar sensor
 void rightDistanceCallback(const std_msgs::Int32::ConstPtr &msg) {
   right_distance = msg->data;
 }
 
+// Array for driving vectors
 Vector2 orintation_vector[] = {
   Vector2(1.0, 0.0),
   Vector2(0.0, 1.0),
@@ -170,6 +158,7 @@ Vector2 orintation_vector[] = {
   Vector2(0.0, -1.0)
 };
 
+// Array for turning vectors
 constexpr float turning_val = FLT_MAX / 2;
 Vector2 turn_vector[] = {
   Vector2(turning_val, 0.0),
@@ -178,19 +167,19 @@ Vector2 turn_vector[] = {
   Vector2(0.0, -turning_val)
 };
 
+// Move the robot one block further 
 void move_forward() {
   while (currentControlStage != IDLE)ros::spinOnce();
-  //idealisedPos = idealisedPos.addNew(orintation_vector[robot_orientation]);
-  //desiredPos = idealisedPos.addNew(origin_offset);
   desiredPos = currentPos + orintation_vector[robot_orientation];
-  desiredPos = Vector2(((static_cast<int>(desiredPos.getX()) / 1) + 0.5), // NOLINT(*-integer-division)
-                       (static_cast<int>(desiredPos.getY()) / 1) + 0.5); // NOLINT(*-integer-division)
+  desiredPos = Vector2(((static_cast<int>(desiredPos.getX()) / 1) + 0.5), 
+                       (static_cast<int>(desiredPos.getY()) / 1) + 0.5); 
   currentControlStage = DRIVING;
   while (currentControlStage != IDLE)ros::spinOnce();
   desiredPos = currentPos + turn_vector[robot_orientation];
   currentControlStage = TURNING;
 }
 
+// Turn the robot to the left
 void turn_left() {
   while (currentControlStage != IDLE)ros::spinOnce();
   desiredPos = currentPos;
@@ -200,6 +189,7 @@ void turn_left() {
   currentControlStage = TURNING;
 }
 
+// Turn the robot to the right
 void turn_right() {
   while (currentControlStage != IDLE)ros::spinOnce();
   desiredPos = currentPos;
@@ -209,6 +199,7 @@ void turn_right() {
   currentControlStage = TURNING;
 }
 
+// Turn the robot around
 void turn_arround() {
   while (currentControlStage != IDLE)ros::spinOnce();
   desiredPos = currentPos;
@@ -356,6 +347,7 @@ int main(int argc, char **argv) {
   // Create the ROS subscriber for the odometry topic
   ros::Subscriber odom_sub = nh.subscribe("/dirac_description/odom", 10, odomCallback);
 
+  // Create the ROS subscriber for the lidar sensor
   ros::Subscriber front_dist_sub = nh.subscribe("/front_distance", 10, frontDistanceCallback);
   ros::Subscriber left_dist_sub = nh.subscribe("/left_distance", 10, leftDistanceCallback);
   ros::Subscriber right_dist_sub = nh.subscribe("/right_distance", 10, rightDistanceCallback);
