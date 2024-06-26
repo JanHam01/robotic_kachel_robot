@@ -26,6 +26,9 @@ enum dirac_orientation {
   LEFT = 3,
 };
 
+
+
+
 // Variable for robot grid oriantation
 dirac_orientation robot_orientation = FORWARD;
 
@@ -58,6 +61,17 @@ double currentHeading = 0.0;
 int front_distance = 0;
 int left_distance = 0;
 int right_distance = 0;
+
+//AStar Object for Path finding
+AStar theAStar;
+//End Tile Position, default (0,0)
+Vector2 endPos(0.0, 0.0);
+//detected Obstacles
+std::vector<Vector2> obstacles;
+//Path to follow filed by a star
+std::vector<Vector2> path;
+//bool to check if robot is loaded into gazebo and ready to run
+bool ready = false;
 
 // Callback function for the PID control
 void pidControlCallback(const ros::TimerEvent &event) {
@@ -208,15 +222,17 @@ void turn_arround() {
 
   currentControlStage = TURNING;
 }
-
+// get Current X tile
 int getCurrentX() {
   return static_cast<int>(std::floor(currentPos.getX()));
 }
 
+// get Current Y tile
 int getCurrentY() {
   return static_cast<int>(std::floor(currentPos.getY()));
 }
-
+// get Distance to Obstacle
+// 1: Front, 2: left, 3:right
 Vector2 getObsPlace(int mode) {
   double x;
   double y;
@@ -235,6 +251,7 @@ Vector2 getObsPlace(int mode) {
   return Vector2(x, y);
 }
 
+//adds the new detected Obstacles to current Obstacle Vector
 void fillObstacles(std::vector<Vector2> &currentObs) {
   if (front_distance > 0) {
     auto obsPos = getObsPlace(1);
@@ -255,7 +272,7 @@ void fillObstacles(std::vector<Vector2> &currentObs) {
     }
   }
 }
-
+//calculates the directions the robot has turn in order to drive in param:dir direction
 dirac_orientation whichWayToTurn(Vector2 dir) {
   dirac_orientation dirToDIrac;
   if (dir.getX() > 0 && dir.getY() == 0) {
@@ -270,17 +287,15 @@ dirac_orientation whichWayToTurn(Vector2 dir) {
   return static_cast<dirac_orientation>(std::abs(dirToDIrac + robot_orientation) % 4);
 }
 
-AStar theAStar;
-Vector2 endPos(0.0, 0.0);
-std::vector<Vector2> obstacles;
-std::vector<Vector2> path;
-bool ready = false;
 
+//Callbackfunction to run for Pathfinding
 void controlCallback(const ros::TimerEvent &) {
+//return if robot is not ready to drive
   if (!ready || currentControlStage != IDLE) {
     return;
   }
   ready = false;
+  //check if goal reached
   if (getCurrentX() == static_cast<int>(endPos.getX()) && getCurrentY() == static_cast<int>(endPos.getY())) {
     ROS_INFO("Goal reached!");
     return;
